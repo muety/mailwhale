@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/julienschmidt/httprouter"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
@@ -24,24 +25,11 @@ func NewMailHandler(sendService *service.SendService) *MailHandler {
 	}
 }
 
-func (h *MailHandler) Register(mux *http.ServeMux) {
-	mux.Handle(routeMail, h)
+func (h *MailHandler) Register(router *httprouter.Router) {
+	router.POST(routeMail, h.post)
 }
 
-func (h *MailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		h.get(w, r)
-	} else if r.Method == http.MethodPost {
-		h.post(w, r)
-	}
-}
-
-func (h *MailHandler) get(w http.ResponseWriter, r *http.Request) {
-	// TODO: implement
-	util.RespondError(w, r, http.StatusMethodNotAllowed)
-}
-
-func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
+func (h *MailHandler) post(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var payload dto.MailSendRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		util.RespondError(w, r, http.StatusBadRequest)

@@ -7,7 +7,7 @@ import (
 
 var store *bolthold.Store
 
-func InitStore(path string) *bolthold.Store {
+func LoadStore(path string) *bolthold.Store {
 	if s, err := bolthold.Open(path, 0664, nil); err != nil {
 		logbuch.Fatal("failed to open store: %v", err)
 	} else {

@@ -2,19 +2,23 @@ package main
 
 import (
 	"github.com/emvi/logbuch"
+	"github.com/julienschmidt/httprouter"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/web/routes/api"
+	"github.com/timshannon/bolthold"
 	"net/http"
 	"time"
 )
 
 var (
 	config *conf.Config
+	store  *bolthold.Store
 )
 
 func main() {
 	config = conf.Load()
+	store = conf.LoadStore(config.Store.Path)
 
 	// Set log level
 	if config.IsDev() {
@@ -25,13 +29,15 @@ func main() {
 
 	// Services
 	sendService := service.NewSendService()
+	clientService := service.NewClientService()
 
 	// Configure routing
-	router := http.NewServeMux()
+	router := httprouter.New()
 
 	// Handlers
 	api.NewHealthHandler().Register(router)
 	api.NewMailHandler(sendService).Register(router)
+	api.NewClientHandler(clientService).Register(router)
 
 	listen(router, config)
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	conf "github.com/muety/mailwhale/config"
 	"net/http"
 )
@@ -18,11 +19,11 @@ func NewHealthHandler() *HealthHandler {
 	}
 }
 
-func (h *HealthHandler) Register(mux *http.ServeMux) {
-	mux.Handle(routeHealth, h)
+func (h *HealthHandler) Register(router *httprouter.Router) {
+	router.GET("/api/health", h.Get)
 }
 
-func (h *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *HealthHandler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("content-type", "text-plain")
 	w.Write([]byte(fmt.Sprintf("app=1\nversion=%s", h.config.Version)))
 }
