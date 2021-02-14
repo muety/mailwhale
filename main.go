@@ -10,9 +10,7 @@ import (
 	"github.com/muety/mailwhale/web/middleware"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/timshannon/bolthold"
-	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -26,6 +24,7 @@ var (
 func main() {
 	config = conf.Load()
 	store = conf.LoadStore(config.Store.Path)
+	defer store.Close()
 
 	// Set log level
 	if config.IsDev() {
@@ -42,10 +41,7 @@ func main() {
 
 	// Global middlewares
 	recoverMiddleware := middleware.NewRecoverMiddleware()
-	loggingMiddleware := middleware.NewLoggingMiddleware(
-		log.New(os.Stdout, "", log.LstdFlags),
-		[]string{},
-	)
+	loggingMiddleware := middleware.NewLoggingMiddleware(logbuch.Info, []string{})
 	baseChain := alice.New(recoverMiddleware, loggingMiddleware)
 
 	// Configure routing
@@ -77,7 +73,6 @@ func listen(handler http.Handler, config *conf.Config) {
 	}()
 
 	<-make(chan interface{}, 1)
-	conf.CloseStore()
 }
 
 func initDefaults() {
