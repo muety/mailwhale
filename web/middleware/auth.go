@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/util"
@@ -38,9 +39,10 @@ func (m AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if util.CompareBcrypt(client.ApiKey, apiKey, m.config.Security.Pepper) {
+	if util.CompareBcrypt(*client.ApiKey, apiKey, m.config.Security.Pepper) {
 		if m.permissions == nil || len(m.permissions) == 0 || client.HasPermissionAnyOf(m.permissions) {
-			m.handler.ServeHTTP(w, r)
+			ctx := context.WithValue(r.Context(), conf.KeyClient, client)
+			m.handler.ServeHTTP(w, r.WithContext(ctx))
 			return
 		}
 	}

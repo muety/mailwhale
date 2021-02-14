@@ -25,10 +25,10 @@ You get a simple **REST API**, which you can call to send out e-mail. You can pl
 
 Stay tuned, there is a lot more to come.
 
+## 🚧 Project State
+The project is in a very early stage and breaking changes are likely to happen. We'd recommend to not yet use this in production or at least expect non-trivial effort required to upgrade to a new version.
+
 ## 📦 Installation
-
-Assuming you have Go installed, all you need to do is:
-
 ```bash
 # 1. Clone repo
 $ git clone https://github.com/muety/mailwhale.git
@@ -46,7 +46,13 @@ $ ./mailwhale
 
 MailWhale has the notion of **clients**, which are applications allowed to access the API to send mails or manage other
 clients. Once you start MailWhale for the first time, a default client is created and its credentials are printed to the
-console (e.g. `f9142379-0d5e-4692-abb7-d42fba2a2fef`). Remember those, as you will need them to use the API.
+console. Remember those, as you will need them to use the API.
+
+### Authentication
+Authenticating against the API currently happens through sending HTTP basic auth, i.e. the `Authorization` is set to the Base64-encoded version of `<CLIENT_NAME>:<PASSWORD>`, for instance:
+```
+Authorization: Basic cm9vdDpmOTE0MjM3OS0wZDVlLTQ2OTItYWJiNy1kNDJmYmEyYTJmZWYK  
+```
 
 ### Create new client application
 
@@ -54,17 +60,27 @@ console (e.g. `f9142379-0d5e-4692-abb7-d42fba2a2fef`). Remember those, as you wi
 $ curl -XPOST \
   -u 'root:<your_api_key>' \
   -H 'content-type: application/json' \
-  --data '{ "name": "my-cool-app", "permissions": [ "send_mail" ] }' \
+  --data '{
+    "name": "my-cool-app",
+    "permissions": [ "send_mail" ],
+    "default_sender": "John Doe <john.doe@example.org>"
+  }' \
   http://localhost:3000/api/client
 
 # Response (201 Created):
-# {"name":"my-cool-app-2","permissions":["send_mail"],"api_key":"ce67d653-92ef-46a1-98fd-50feb1c07495"}
+# {
+#     "name": "my-cool-app",
+#     "permissions": ["send_mail"],
+#     "default_sender": "John Doe <john.doe@example.org>",
+#     "allowed_senders": ["john.doe@example.org"],
+#     "api_key": "411f9f30-3dfd-4b94-b427-2345e6e84677"
+# }
 ```
 
 ### Send an HTML mail (synchronously)
 
 ```bash
-curl -XPOST \
+$ curl -XPOST \
   -u 'root:<your_api_key>' \
   -H 'content-type: application/json' \
   --data '{
@@ -84,14 +100,12 @@ Right now, this app is very basic. However, there are several cool features on o
 
 * **Mail Templates:** Users will be able to create complex (HTML) templates or presets for their mails, which can then
   be referenced in send requests.
-  _(What templating language would you like. We thought of simply leveraging [Go templates](https://pkg.go.dev/text/template) ❓)_
 * **Bound handling:** Ultimately, we want to offer the ability to plug an IMAP server in addition, to get notified about
   bounced / undelivered mails.
 * **Statistics:** There will be basic statistics about when which client has sent how many mails, how many were
   successful or were bounced, etc.
 * **Web UI:** A nice-looking web UI will make client- and template management easier.
 * **Client libraries:** To make the developer experience even smoother, client SDKs for different programming languages will we added some time.
-  _(Which ones would you like to see ❓)_
 * **Minor enhancements:** IPv6- and TLS support, API documentation, ...
 
 ## 📓 License

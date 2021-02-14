@@ -43,8 +43,21 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	client := r.Context().Value(conf.KeyClient).(*types.Client)
+
+	sender := payload.From
+	if sender == "" {
+		sender = client.DefaultSender
+	}
+
+	if !client.AllowsSender(sender) {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = w.Write([]byte("sender not allowed"))
+		return
+	}
+
 	mail := &types.Mail{
-		From:    payload.From,
+		From:    sender,
 		To:      payload.To,
 		Subject: payload.Subject,
 	}

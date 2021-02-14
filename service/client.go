@@ -34,30 +34,20 @@ func (s *ClientService) GetByName(name string) (*types.Client, error) {
 	return &client, err
 }
 
-func (s *ClientService) Create(client *types.Client) (*types.ClientWithApiKey, error) {
-	apiKey, hash := s.createApiKey()
-	client.ApiKey = hash
+func (s *ClientService) Create(client *types.Client) (*types.Client, error) {
+	client, clientDto := s.preprocess(client)
 	if err := s.store.Insert(client.Name, client); err != nil {
 		return nil, err
 	}
-	return &types.ClientWithApiKey{
-		Name:        client.Name,
-		ApiKey:      apiKey,
-		Permissions: client.Permissions,
-	}, nil
+	return clientDto, nil
 }
 
-func (s *ClientService) Update(client *types.Client) (*types.ClientWithApiKey, error) {
-	apiKey, hash := s.createApiKey()
-	client.ApiKey = hash
+func (s *ClientService) Update(client *types.Client) (*types.Client, error) {
+	client, clientDto := s.preprocess(client)
 	if err := s.store.Update(client.Name, client); err != nil {
 		return nil, err
 	}
-	return &types.ClientWithApiKey{
-		Name:        client.Name,
-		ApiKey:      apiKey,
-		Permissions: client.Permissions,
-	}, nil
+	return clientDto, nil
 }
 
 func (s *ClientService) Delete(name string) error {
@@ -68,4 +58,26 @@ func (s *ClientService) createApiKey() (key, hash string) {
 	key = uuid.New().String()
 	hash = util.HashBcrypt(key, s.config.Security.Pepper)
 	return key, hash
+}
+
+func (s *ClientService) preprocess(client *types.Client) (*types.Client, *types.Client) {
+	apiKey, hash := s.createApiKey()
+	client.ApiKey = &hash
+
+	if client.Permissions == nil {
+		client.Permissions = []string{}
+	}
+
+	if client.AllowedSenders == nil {
+		client.AllowedSenders = []types.MailAddress{}
+	}
+
+	if client.DefaultSender != "" && (!client.AllowsSender(client.DefaultSender) || len(client.AllowedSenders) == 0) {
+		client.AllowedSenders = append(client.AllowedSenders, types.MailAddress(client.DefaultSender.Raw()))
+	}
+
+	clientDto := *client
+	clientDto.ApiKey = &apiKey
+
+	return client, &clientDto
 }

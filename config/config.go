@@ -11,9 +11,12 @@ import (
 )
 
 const (
-	DefaultClientName      = "root"
+	DefaultClientName = "root"
+
 	PermissionSendMail     = "send_mail"
 	PermissionManageClient = "manage_client"
+
+	KeyClient = "client"
 )
 
 type smtpConfig struct {

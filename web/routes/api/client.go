@@ -43,6 +43,9 @@ func (h *ClientHandler) getAll(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusInternalServerError, err)
 		return
 	}
+	for _, c := range clients {
+		c.Sanitize()
+	}
 	util.RespondJson(w, http.StatusOK, clients)
 }
 
@@ -53,6 +56,7 @@ func (h *ClientHandler) getByName(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}
+	client = client.Sanitize()
 	util.RespondJson(w, http.StatusOK, client)
 }
 
