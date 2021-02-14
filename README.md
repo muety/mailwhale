@@ -21,7 +21,9 @@ you **include an SMTP client library** to your software and **plug your own mail
 However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity ,
 but still use your own infrastructure, you may want to go with ✉️🐳.
 
-You get a simple REST API, which you can call to send out e-mail. Stay tuned, there is a lot more to come.
+You get a simple **REST API**, which you can call to send out e-mail. You can plug your self-hosted SMTP server, as well as Google Mail or **literally any other e-mail provider**.
+
+Stay tuned, there is a lot more to come.
 
 ## 📦 Installation
 
