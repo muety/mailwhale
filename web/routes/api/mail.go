@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
@@ -28,15 +29,17 @@ func NewMailHandler(sendService *service.SendService, clientService *service.Cli
 	}
 }
 
-func (h *MailHandler) Register(router *httprouter.Router) {
-	auth := middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionSendMail})
-	router.HandlerFunc(http.MethodPost, routeMail, auth(h.post).ServeHTTP)
+func (h *MailHandler) Register(router *httprouter.Router, baseChain *alice.Chain) {
+	chain := baseChain.Extend(alice.New(
+		middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionSendMail}),
+	))
+	router.Handler(http.MethodPost, routeMail, chain.ThenFunc(h.post))
 }
 
 func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	var payload dto.MailSendRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		util.RespondError(w, r, http.StatusBadRequest)
+		util.RespondError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -54,7 +57,7 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.sendService.Send(mail); err != nil {
-		util.RespondError(w, r, http.StatusInternalServerError)
+		util.RespondError(w, r, http.StatusInternalServerError, err)
 		return
 	}
 

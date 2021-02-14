@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
 	conf "github.com/muety/mailwhale/config"
 	"net/http"
 )
@@ -19,7 +20,7 @@ func NewHealthHandler() *HealthHandler {
 	}
 }
 
-func (h *HealthHandler) Register(router *httprouter.Router) {
+func (h *HealthHandler) Register(router *httprouter.Router, _ *alice.Chain) {
 	router.GET("/api/health", h.Get)
 }
 

@@ -3,12 +3,16 @@ package main
 import (
 	"github.com/emvi/logbuch"
 	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
+	"github.com/muety/mailwhale/web/middleware"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/timshannon/bolthold"
+	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -36,13 +40,21 @@ func main() {
 
 	initDefaults()
 
+	// Global middlewares
+	recoverMiddleware := middleware.NewRecoverMiddleware()
+	loggingMiddleware := middleware.NewLoggingMiddleware(
+		log.New(os.Stdout, "", log.LstdFlags),
+		[]string{},
+	)
+	baseChain := alice.New(recoverMiddleware, loggingMiddleware)
+
 	// Configure routing
 	router := httprouter.New()
 
 	// Handlers
-	api.NewHealthHandler().Register(router)
-	api.NewMailHandler(sendService, clientService).Register(router)
-	api.NewClientHandler(clientService).Register(router)
+	api.NewHealthHandler().Register(router, &baseChain)
+	api.NewMailHandler(sendService, clientService).Register(router, &baseChain)
+	api.NewClientHandler(clientService).Register(router, &baseChain)
 
 	listen(router, config)
 }
