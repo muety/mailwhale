@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+const routeHealth = "/api/health"
+
 type HealthHandler struct {
 	config *conf.Config
 }
@@ -17,7 +19,7 @@ func NewHealthHandler() *HealthHandler {
 }
 
 func (h *HealthHandler) Register(mux *http.ServeMux) {
-	mux.Handle("/api/health", h)
+	mux.Handle(routeHealth, h)
 }
 
 func (h *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

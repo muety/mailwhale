@@ -22,11 +22,16 @@ type webConfig struct {
 	ListenV4 string `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
 }
 
+type storeConfig struct {
+	Path string `default:"data.gob.db" env:"MW_STORE_PATH"`
+}
+
 type Config struct {
 	Env     string `default:"dev" env:"MW_ENV"`
 	Version string
 	Web     webConfig
 	Smtp    smtpConfig
+	Store   storeConfig
 }
 
 var cfg *Config

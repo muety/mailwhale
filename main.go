@@ -4,7 +4,7 @@ import (
 	"github.com/emvi/logbuch"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
-	"github.com/muety/mailwhale/web/api"
+	"github.com/muety/mailwhale/web/routes/api"
 	"net/http"
 	"time"
 )

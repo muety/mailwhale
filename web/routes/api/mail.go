@@ -2,13 +2,15 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/emvi/logbuch"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/types/dto"
+	"github.com/muety/mailwhale/util"
 	"net/http"
 )
+
+const routeMail = "/api/mail"
 
 type MailHandler struct {
 	config      *conf.Config
@@ -23,29 +25,26 @@ func NewMailHandler(sendService *service.SendService) *MailHandler {
 }
 
 func (h *MailHandler) Register(mux *http.ServeMux) {
-	mux.Handle("/api/mail", h)
+	mux.Handle(routeMail, h)
 }
 
 func (h *MailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		h.handleGet(w, r)
+		h.get(w, r)
 	} else if r.Method == http.MethodPost {
-		h.handlePost(w, r)
+		h.post(w, r)
 	}
 }
 
-func (h *MailHandler) handleGet(w http.ResponseWriter, r *http.Request) {
+func (h *MailHandler) get(w http.ResponseWriter, r *http.Request) {
 	// TODO: implement
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	_, _ = w.Write([]byte(http.StatusText(http.StatusMethodNotAllowed)))
+	util.RespondError(w, r, http.StatusMethodNotAllowed)
 }
 
-func (h *MailHandler) handlePost(w http.ResponseWriter, r *http.Request) {
+func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	var payload dto.MailSendRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		logbuch.Error("failed to decode mail request body: %v", err)
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		util.RespondError(w, r, http.StatusBadRequest)
 		return
 	}
 
@@ -63,12 +62,9 @@ func (h *MailHandler) handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.sendService.Send(mail); err != nil {
-		logbuch.Error("failed to send mail: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte(http.StatusText(http.StatusInternalServerError)))
+		util.RespondError(w, r, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(http.StatusText(http.StatusOK)))
+	util.RespondEmpty(w, r, 0)
 }
