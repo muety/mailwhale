@@ -1,0 +1,13 @@
+github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
+github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21 h1:OJyUGMJTzHTd1XQp98QTaHernxMYzRaOasRir9hUlFQ=
+github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21/go.mod h1:iL2twTeMvZnrg54ZoPDNfJaJaqy0xIQFuBdrLsmspwQ=
+github.com/emersion/go-smtp v0.14.0 h1:RYW203p+EcPjL8Z/ZpT9lZ6iOc8MG1MQzEx1UKEkXlA=
+github.com/emersion/go-smtp v0.14.0/go.mod h1:qm27SGYgoIPRot6ubfQ/GpiPy/g3PaZAVRxiO/sDUgQ=
+github.com/emvi/logbuch v1.1.2 h1:uAHXXqEDboQmEFCNG7ZhCK7h6eMTVshvr6L0UrtC13w=
+github.com/emvi/logbuch v1.1.2/go.mod h1:J2Wgbr3BuSc1JO+D2MBVh6q3WPVSK5GzktwWz8pvkKw=
+github.com/jinzhu/configor v1.2.1 h1:OKk9dsR8i6HPOCZR8BcMtcEImAFjIhbJFZNyn5GCZko=
+github.com/jinzhu/configor v1.2.1/go.mod h1:nX89/MOmDba7ZX7GCyU/VIaQ2Ar2aizBl2d3JLF/rDc=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

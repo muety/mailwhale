@@ -1,0 +1,9 @@
+env: dev
+web:
+  listen_v4: '127.0.0.1:3000'
+smtp:
+  host: localhost
+  port: 587
+  username: mailwhale
+  password: mailwhale
+  tls: true
