@@ -18,8 +18,8 @@ Essentially, there are two options. Either you use a **professional mail sending
 like [Mailgun](https://mailgun.com), [SendGrid](https://sendgrid.com), [SMTPeter](https://smtpeter.com) and the like or
 you **include an SMTP client library** to your software and **plug your own mail server**.
 
-However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity ,
-but still use your own infrastructure, you may want to go with ✉️🐳.
+However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity, 
+but still use your own infrastructure – you may want to go with ✉️🐳.
 
 You get a simple **REST API**, which you can call to send out e-mail. You can plug your self-hosted SMTP server, as well as Google Mail or **literally any other e-mail provider**.
 
@@ -84,11 +84,14 @@ Right now, this app is very basic. However, there are several cool features on o
 
 * **Mail Templates:** Users will be able to create complex (HTML) templates or presets for their mails, which can then
   be referenced in send requests.
+  _(What templating language would you like. We thought of simply leveraging [Go templates](https://pkg.go.dev/text/template) ❓)_
 * **Bound handling:** Ultimately, we want to offer the ability to plug an IMAP server in addition, to get notified about
   bounced / undelivered mails.
 * **Statistics:** There will be basic statistics about when which client has sent how many mails, how many were
   successful or were bounced, etc.
 * **Web UI:** A nice-looking web UI will make client- and template management easier.
+* **Client libraries:** To make the developer experience even smoother, client SDKs for different programming languages will we added some time.
+  _(Which ones would you like to see ❓)_
 * **Minor enhancements:** IPv6- and TLS support, API documentation, ...
 
 ## 📓 License
