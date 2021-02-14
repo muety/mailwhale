@@ -65,10 +65,10 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 
 	client, err := h.clientService.Create(&payload)
 	if err != nil {
-		util.RespondError(w, r, http.StatusNotFound, err)
+		util.RespondError(w, r, http.StatusConflict, err)
 		return
 	}
-	util.RespondJson(w, http.StatusOK, client)
+	util.RespondJson(w, http.StatusCreated, client)
 }
 
 func (h *ClientHandler) put(w http.ResponseWriter, r *http.Request) {

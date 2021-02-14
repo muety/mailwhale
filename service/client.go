@@ -41,8 +41,9 @@ func (s *ClientService) Create(client *types.Client) (*types.ClientWithApiKey, e
 		return nil, err
 	}
 	return &types.ClientWithApiKey{
-		Name:   client.Name,
-		ApiKey: apiKey,
+		Name:        client.Name,
+		ApiKey:      apiKey,
+		Permissions: client.Permissions,
 	}, nil
 }
 
@@ -53,8 +54,9 @@ func (s *ClientService) Update(client *types.Client) (*types.ClientWithApiKey, e
 		return nil, err
 	}
 	return &types.ClientWithApiKey{
-		Name:   client.Name,
-		ApiKey: apiKey,
+		Name:        client.Name,
+		ApiKey:      apiKey,
+		Permissions: client.Permissions,
 	}, nil
 }
 
