@@ -1,9 +1,13 @@
-env: dev
+env: dev                              # Affects log level and a few other things
 web:
-  listen_v4: '127.0.0.1:3000'
+  listen_v4: '127.0.0.1:3000'         # Where to make the http server listen
 smtp:
-  host: localhost
-  port: 587
-  username: mailwhale
-  password: mailwhale
-  tls: true
+  host: 'localhost'
+  port: 465
+  username: 'you@example.org'
+  password: 'your secret password'
+  tls: true                           # Whether to connect via SSL/TLS (set 'false' for STARTTLS)
+store:
+  path: 'data.gob.db'
+security:
+  pepper: 'sshhh'

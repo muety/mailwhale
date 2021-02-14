@@ -5,6 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
+	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/timshannon/bolthold"
 	"net/http"
@@ -12,8 +13,10 @@ import (
 )
 
 var (
-	config *conf.Config
-	store  *bolthold.Store
+	config        *conf.Config
+	store         *bolthold.Store
+	sendService   *service.SendService
+	clientService *service.ClientService
 )
 
 func main() {
@@ -28,15 +31,17 @@ func main() {
 	}
 
 	// Services
-	sendService := service.NewSendService()
-	clientService := service.NewClientService()
+	sendService = service.NewSendService()
+	clientService = service.NewClientService()
+
+	initDefaults()
 
 	// Configure routing
 	router := httprouter.New()
 
 	// Handlers
 	api.NewHealthHandler().Register(router)
-	api.NewMailHandler(sendService).Register(router)
+	api.NewMailHandler(sendService, clientService).Register(router)
 	api.NewClientHandler(clientService).Register(router)
 
 	listen(router, config)
@@ -60,4 +65,24 @@ func listen(handler http.Handler, config *conf.Config) {
 	}()
 
 	<-make(chan interface{}, 1)
+	conf.CloseStore()
+}
+
+func initDefaults() {
+	clients, err := clientService.GetAll()
+	if err != nil {
+		logbuch.Fatal("failed to fetch clients initially: %v", err)
+	}
+
+	if len(clients) == 0 {
+		client, err := clientService.Create(&types.Client{
+			Name:        conf.DefaultClientName,
+			Permissions: []string{conf.PermissionSendMail, conf.PermissionManageClient},
+		})
+		if err != nil {
+			logbuch.Fatal("failed to initialize default client: %v", err)
+		}
+		logbuch.Info("Created default client with name '%s'", conf.DefaultClientName)
+		logbuch.Info(">>> API key: %s <<<", client.ApiKey)
+	}
 }

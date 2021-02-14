@@ -8,28 +8,32 @@ import (
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/types/dto"
 	"github.com/muety/mailwhale/util"
+	"github.com/muety/mailwhale/web/middleware"
 	"net/http"
 )
 
 const routeMail = "/api/mail"
 
 type MailHandler struct {
-	config      *conf.Config
-	sendService *service.SendService
+	config        *conf.Config
+	sendService   *service.SendService
+	clientService *service.ClientService
 }
 
-func NewMailHandler(sendService *service.SendService) *MailHandler {
+func NewMailHandler(sendService *service.SendService, clientService *service.ClientService) *MailHandler {
 	return &MailHandler{
-		config:      conf.Get(),
-		sendService: sendService,
+		config:        conf.Get(),
+		sendService:   sendService,
+		clientService: clientService,
 	}
 }
 
 func (h *MailHandler) Register(router *httprouter.Router) {
-	router.POST(routeMail, h.post)
+	auth := middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionSendMail})
+	router.HandlerFunc(http.MethodPost, routeMail, auth(h.post).ServeHTTP)
 }
 
-func (h *MailHandler) post(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	var payload dto.MailSendRequest
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		util.RespondError(w, r, http.StatusBadRequest)

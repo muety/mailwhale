@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+const (
+	DefaultClientName      = "root"
+	PermissionSendMail     = "send_mail"
+	PermissionManageClient = "manage_client"
+)
+
 type smtpConfig struct {
 	Host     string `env:"MW_SMTP_HOST"`
 	Port     uint   `env:"MW_SMTP_PORT"`
@@ -26,12 +32,17 @@ type storeConfig struct {
 	Path string `default:"data.gob.db" env:"MW_STORE_PATH"`
 }
 
+type securityConfig struct {
+	Pepper string `env:"MW_SECURITY_PEPPER"`
+}
+
 type Config struct {
-	Env     string `default:"dev" env:"MW_ENV"`
-	Version string
-	Web     webConfig
-	Smtp    smtpConfig
-	Store   storeConfig
+	Env      string `default:"dev" env:"MW_ENV"`
+	Version  string
+	Web      webConfig
+	Smtp     smtpConfig
+	Store    storeConfig
+	Security securityConfig
 }
 
 var cfg *Config
