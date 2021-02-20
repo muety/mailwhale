@@ -29,6 +29,7 @@ Stay tuned, there is a lot more to come.
 The project is in a very early stage and breaking changes are likely to happen. We'd recommend to not yet use this in production or at least expect non-trivial effort required to upgrade to a new version.
 
 ## 📦 Installation
+### Compile from source
 ```bash
 # 1. Clone repo
 $ git clone https://github.com/muety/mailwhale.git
@@ -42,8 +43,33 @@ $ GO111MODULE=on go build
 $ ./mailwhale
 ```
 
-## ⌨️ Usage
+### With Docker
+```bash
+# 1. Clone repo
+$ git clone https://github.com/muety/mailwhale.git
 
+# 2. Adapt config to your needs, i.e. set your SMTP server and credentials, etc.
+$ cp config.default.yml config.yml
+$ vi config.yml
+
+# 3. Build image
+$ docker build -t mailwhale .
+
+# 4. Create persistent volume
+$ docker volume create mailwhale_data
+
+# 5. Run
+$ docker run -d \
+  -p 127.0.0.1:3000:3000 \
+  -v "$(pwd)/config.yml":/app/config.yml:ro \
+  -v mailwhale_data:/data \
+  --name mailwhale \
+  mailwhale
+```
+
+**Note:** An official Docker image is about to come. Also, there will be no need to mount your config file into the container, as everything will be configurable using environment variables eventually. 
+
+## ⌨️ Usage
 ### 1. Define a user
 To get started with MailWhale, you need to create a **user** first. Currently, this is done through hard-coded config (see `seed_users` in [config.default.yml](config.default.yml)). Later on, once we have a web UI, there will be a way to easily sign up new users at runtime. 
 
