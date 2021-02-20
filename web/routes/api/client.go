@@ -16,29 +16,32 @@ const routeClient = "/api/client"
 type ClientHandler struct {
 	config        *conf.Config
 	clientService *service.ClientService
+	userService   *service.UserService
 }
 
-func NewClientHandler(clientService *service.ClientService) *ClientHandler {
+func NewClientHandler() *ClientHandler {
 	return &ClientHandler{
 		config:        conf.Get(),
-		clientService: clientService,
+		clientService: service.NewClientService(),
+		userService:   service.NewUserService(),
 	}
 }
 
 func (h *ClientHandler) Register(router *mux.Router) {
 	r := router.PathPrefix(routeClient).Subrouter()
 	r.Use(
-		middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionManageClient}),
+		middleware.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionManageClient}),
 	)
-	r.Path("/{name}").Methods(http.MethodGet).HandlerFunc(h.getByName)
-	r.Path("/{name}").Methods(http.MethodPut).HandlerFunc(h.put)
-	r.Path("/{name}").Methods(http.MethodDelete).HandlerFunc(h.delete)
-	r.Methods(http.MethodGet).HandlerFunc(h.getAll)
+	r.Path("/{id}").Methods(http.MethodGet).HandlerFunc(h.getById)
+	r.Path("/{id}").Methods(http.MethodDelete).HandlerFunc(h.delete)
+	r.Methods(http.MethodGet).HandlerFunc(h.get)
 	r.Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
-func (h *ClientHandler) getAll(w http.ResponseWriter, r *http.Request) {
-	clients, err := h.clientService.GetAll()
+func (h *ClientHandler) get(w http.ResponseWriter, r *http.Request) {
+	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
+
+	clients, err := h.clientService.GetByUser(reqClient.UserId)
 	if err != nil {
 		util.RespondError(w, r, http.StatusInternalServerError, err)
 		return
@@ -49,9 +52,15 @@ func (h *ClientHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	util.RespondJson(w, http.StatusOK, clients)
 }
 
-func (h *ClientHandler) getByName(w http.ResponseWriter, r *http.Request) {
-	client, err := h.clientService.GetByName(mux.Vars(r)["name"])
+func (h *ClientHandler) getById(w http.ResponseWriter, r *http.Request) {
+	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
+
+	client, err := h.clientService.GetById(mux.Vars(r)["id"])
 	if err != nil {
+		util.RespondError(w, r, http.StatusNotFound, err)
+		return
+	}
+	if client.UserId != reqClient.UserId {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}
@@ -60,9 +69,18 @@ func (h *ClientHandler) getByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
+	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
+
 	var payload types.Client
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		util.RespondError(w, r, http.StatusBadRequest, err)
+		return
+	}
+
+	payload.UserId = reqClient.UserId
+
+	if err := payload.Validate(); err != nil {
+		util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -74,27 +92,24 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 	util.RespondJson(w, http.StatusCreated, client)
 }
 
-func (h *ClientHandler) put(w http.ResponseWriter, r *http.Request) {
-	var payload types.Client
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		util.RespondError(w, r, http.StatusBadRequest, err)
-		return
-	}
-	payload.Name = mux.Vars(r)["name"]
-
-	client, err := h.clientService.Update(&payload)
-	if err != nil {
-		util.RespondError(w, r, http.StatusNotFound, err)
-		return
-	}
-	util.RespondJson(w, http.StatusOK, client)
-}
-
 func (h *ClientHandler) delete(w http.ResponseWriter, r *http.Request) {
-	err := h.clientService.Delete(mux.Vars(r)["name"])
+	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
+
+	client, err := h.clientService.GetById(mux.Vars(r)["id"])
 	if err != nil {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}
+
+	if reqClient.UserId != client.UserId {
+		util.RespondError(w, r, http.StatusNotFound, err)
+		return
+	}
+
+	if err := h.clientService.Delete(mux.Vars(r)["id"]); err != nil {
+		util.RespondError(w, r, http.StatusNotFound, err)
+		return
+	}
+
 	util.RespondEmpty(w, r, http.StatusNoContent)
 }

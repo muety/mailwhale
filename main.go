@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
-	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/web/middleware"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/timshannon/bolthold"
@@ -15,10 +14,9 @@ import (
 )
 
 var (
-	config        *conf.Config
-	store         *bolthold.Store
-	sendService   *service.SendService
-	clientService *service.ClientService
+	config      *conf.Config
+	store       *bolthold.Store
+	userService *service.UserService
 )
 
 func main() {
@@ -34,8 +32,7 @@ func main() {
 	}
 
 	// Services
-	sendService = service.NewSendService()
-	clientService = service.NewClientService()
+	userService = service.NewUserService()
 
 	initDefaults()
 
@@ -49,8 +46,8 @@ func main() {
 
 	// Handlers
 	api.NewHealthHandler().Register(router)
-	api.NewMailHandler(sendService, clientService).Register(router)
-	api.NewClientHandler(clientService).Register(router)
+	api.NewMailHandler().Register(router)
+	api.NewClientHandler().Register(router)
 
 	listen(router, config)
 }
@@ -66,7 +63,7 @@ func listen(handler http.Handler, config *conf.Config) {
 	}
 
 	go func() {
-		logbuch.Info("Web server started. Listening on %s", config.Web.ListenV4)
+		logbuch.Info("web server started, listening on %s", config.Web.ListenV4)
 		if err := s4.ListenAndServe(); err != nil {
 			logbuch.Fatal("failed to start web server: %v", err)
 		}
@@ -76,20 +73,21 @@ func listen(handler http.Handler, config *conf.Config) {
 }
 
 func initDefaults() {
-	clients, err := clientService.GetAll()
-	if err != nil {
-		logbuch.Fatal("failed to fetch clients initially: %v", err)
-	}
-
-	if len(clients) == 0 {
-		client, err := clientService.Create(&types.Client{
-			Name:        conf.DefaultClientName,
-			Permissions: []string{conf.PermissionSendMail, conf.PermissionManageClient},
-		})
-		if err != nil {
-			logbuch.Fatal("failed to initialize default client: %v", err)
+	for _, u := range config.Security.SeedUsers {
+		if user, err := userService.GetById(u.Email); err == nil {
+			user.Password = u.Password
+			user, err = userService.Update(user)
+			if err != nil {
+				logbuch.Fatal("failed to update user '%s': %v", u.Email, err)
+			}
+			logbuch.Info("updated user '%s'", user.ID)
+			continue
 		}
-		logbuch.Info("Created default client with name '%s'", conf.DefaultClientName)
-		logbuch.Info(">>> API key: %s <<<", client.ApiKey)
+
+		user, err := userService.Create(&u)
+		if err != nil {
+			logbuch.Fatal("failed to create seed user '%s': %v", u.Email, err)
+		}
+		logbuch.Info("created seed user '%s'", user.ID)
 	}
 }

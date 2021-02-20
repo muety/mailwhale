@@ -18,20 +18,22 @@ type MailHandler struct {
 	config        *conf.Config
 	sendService   *service.SendService
 	clientService *service.ClientService
+	userService   *service.UserService
 }
 
-func NewMailHandler(sendService *service.SendService, clientService *service.ClientService) *MailHandler {
+func NewMailHandler() *MailHandler {
 	return &MailHandler{
 		config:        conf.Get(),
-		sendService:   sendService,
-		clientService: clientService,
+		sendService:   service.NewSendService(),
+		clientService: service.NewClientService(),
+		userService:   service.NewUserService(),
 	}
 }
 
 func (h *MailHandler) Register(router *mux.Router) {
 	r := router.PathPrefix(routeMail).Subrouter()
 	r.Use(
-		middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionSendMail}),
+		middleware.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionSendMail}),
 	)
 	r.Methods(http.MethodPost).HandlerFunc(h.post)
 }

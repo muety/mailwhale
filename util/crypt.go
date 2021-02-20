@@ -12,6 +12,9 @@ func CompareBcrypt(wanted, actual, pepper string) bool {
 }
 
 func HashBcrypt(plain, pepper string) string {
+	if plain == "" {
+		return ""
+	}
 	plainPepperedPassword := []byte(strings.TrimSpace(plain) + pepper)
 	bytes, _ := bcrypt.GenerateFromPassword(plainPepperedPassword, bcrypt.DefaultCost)
 	return string(bytes)

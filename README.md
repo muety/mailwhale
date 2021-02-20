@@ -44,52 +44,68 @@ $ ./mailwhale
 
 ## ⌨️ Usage
 
-MailWhale has the notion of **clients**, which are applications allowed to access the API to send mails or manage other
-clients. Once you start MailWhale for the first time, a default client is created and its credentials are printed to the
-console. Remember those, as you will need them to use the API.
+### 1. Define a user
+To get started with MailWhale, you need to create a **user** first. Currently, this is done through hard-coded config (see `seed_users` in [config.default.yml](config.default.yml)). Later on, once we have a web UI, there will be a way to easily sign up new users at runtime. 
 
-### Authentication
-Authenticating against the API currently happens through sending HTTP basic auth, i.e. the `Authorization` is set to the Base64-encoded version of `<CLIENT_NAME>:<PASSWORD>`, for instance:
-```
-Authorization: Basic cm9vdDpmOTE0MjM3OS0wZDVlLTQ2OTItYWJiNy1kNDJmYmEyYTJmZWYK  
+### 2. Create an API client
+It is good practice to not authenticate against the API as a user directly. Instead, create an **API client** with limited privileges, that could easily be revoked in the future. A client is identified by a **client ID** and a **client secret** (or token), very similar to what you might already be familiar with from AWS APIs. Usually, such a client corresponds to an individual client application of yours, which wants to access MailWhale's API. 
+
+#### Request
+```bash
+$ curl -XPOST \
+     -u 'admin@local.host:admin' \
+     -H 'Content-Type: application/json' \
+     --data-raw '{
+         "description": "My juicy web app",
+         "default_sender": "Epic Juice Store <noreply@epicjuicestore.org>",
+         "permissions": ["send_mail"]
+     }' \
+     'http://localhost:3000/api/client'
 ```
 
-### Create new client application
+#### Response
+```
+{
+    "id": "SVNORFBUWGhxWGZSUUl0eA==",
+    "description": "My juicy web app",
+    "permissions": [
+        "send_mail"
+    ],
+    "default_sender": "Epic Juice Store <noreply@epicjuicestore.org>",
+    "allowed_senders": [
+        "noreply@epicjuicestore.org"
+    ],
+    "api_key": "75c74447-c4af-453b-ad06-3a8ae969ed16"
+}
+```
+
+The response contains your new client's ID (`id`) and secret (`api_key`). Remember these credentials, as they are needed for subsequent requests from your application.
+
+Client authentication happens through HTTP [basic auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#basic_authentication_scheme). Most HTTP clients support basic auth out of the box (including cURL with its `-u` parameter). If your's doesn't, you can hash create the hash like so:
+
+```bash
+$ echo "Authorization: Basic $(echo '<client_id>:<client_secret>' | base64)"
+
+# Result:
+# Authorization: Basic U1ZOT1JGQlVXR2h4V0daU1VVbDBlQT09Ojc1Yzc0NDQ3LWM0YWYtNDUzYi1hZDA2LTNhOGFlOTY5ZWQxNg==
+```
+
+### 3. Send E-Mails
+
+Authenticating against the API currently 
+
 
 ```bash
 $ curl -XPOST \
-  -u 'root:<your_api_key>' \
+  -u '<client_id>:<client_secret>' \
   -H 'content-type: application/json' \
   --data '{
-    "name": "my-cool-app",
-    "permissions": [ "send_mail" ],
-    "default_sender": "John Doe <john.doe@example.org>"
-  }' \
-  http://localhost:3000/api/client
-
-# Response (201 Created):
-# {
-#     "name": "my-cool-app",
-#     "permissions": ["send_mail"],
-#     "default_sender": "John Doe <john.doe@example.org>",
-#     "allowed_senders": ["john.doe@example.org"],
-#     "api_key": "411f9f30-3dfd-4b94-b427-2345e6e84677"
-# }
-```
-
-### Send an HTML mail (synchronously)
-
-```bash
-$ curl -XPOST \
-  -u 'root:<your_api_key>' \
-  -H 'content-type: application/json' \
-  --data '{
-      "from": "John Doe <john.doe@example.org>",
+      "from": "Epic Juice Store <noreply@epicjuicestore.org>",
       "to": ["Jane Doe <jane@doe.com>"],
       "subject": "Dinner tonight?",
       "html": "<h1>Hey you!</h1><p>Wanna have dinner tonight?</p>"
   }' \
-  http://localhost:3000/api/mail
+  'http://localhost:3000/api/mail'
 ```
 
 You can also a `text` field instead, to send a plain text message.
@@ -100,11 +116,11 @@ Right now, this app is very basic. However, there are several cool features on o
 
 * **Mail Templates:** Users will be able to create complex (HTML) templates or presets for their mails, which can then
   be referenced in send requests.
-* **Bound handling:** Ultimately, we want to offer the ability to plug an IMAP server in addition, to get notified about
+* **Web UI:** A nice-looking web UI will make client- and template management easier.
+* **Bounce handling:** Ultimately, we want to offer the ability to plug an IMAP server in addition, to get notified about
   bounced / undelivered mails.
 * **Statistics:** There will be basic statistics about when which client has sent how many mails, how many were
   successful or were bounced, etc.
-* **Web UI:** A nice-looking web UI will make client- and template management easier.
 * **Client libraries:** To make the developer experience even smoother, client SDKs for different programming languages will we added some time.
 * **Minor enhancements:** IPv6- and TLS support, API documentation, ...
 

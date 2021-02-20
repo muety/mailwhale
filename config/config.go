@@ -5,17 +5,14 @@ import (
 	"fmt"
 	"github.com/emvi/logbuch"
 	"github.com/jinzhu/configor"
+	"github.com/muety/mailwhale/types"
 	"io/ioutil"
 	"os"
 	"strings"
 )
 
 const (
-	DefaultClientName = "root"
-
-	PermissionSendMail     = "send_mail"
-	PermissionManageClient = "manage_client"
-
+	KeyUser   = "user"
 	KeyClient = "client"
 )
 
@@ -36,7 +33,8 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper string `env:"MW_SECURITY_PEPPER"`
+	Pepper    string         `env:"MW_SECURITY_PEPPER"`
+	SeedUsers []types.Signup `yaml:"seed_users"`
 }
 
 type Config struct {
@@ -71,6 +69,10 @@ func Load() *Config {
 
 	if config.Web.ListenV4 == "" {
 		logbuch.Fatal("config option 'listen4' must be specified")
+	}
+
+	if config.Security.SeedUsers == nil || len(config.Security.SeedUsers) == 0 {
+		logbuch.Fatal("you need to create at least one initial user via config.yml as there currently is no way to dynamically create users at runtime")
 	}
 
 	Set(config)

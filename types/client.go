@@ -1,7 +1,27 @@
 package types
 
+import (
+	"errors"
+	"fmt"
+	"github.com/muety/mailwhale/util"
+)
+
+const (
+	PermissionSendMail     = "send_mail"
+	PermissionManageClient = "manage_client"
+)
+
+func AllPermissions() []string {
+	return []string{
+		PermissionSendMail,
+		PermissionManageClient,
+	}
+}
+
 type Client struct {
-	Name           string        `json:"name"`
+	ID             string        `json:"id"`
+	Description    string        `json:"description"`
+	UserId         string        `json:"-" boltholdIndex:"UserId"`
 	Permissions    []string      `json:"permissions"`
 	DefaultSender  MailAddress   `json:"default_sender"`
 	AllowedSenders MailAddresses `json:"allowed_senders"` // none (except default) means all
@@ -47,4 +67,17 @@ func (c *Client) AllowsSender(sender MailAddress) bool {
 func (c *Client) Sanitize() *Client {
 	c.ApiKey = nil
 	return c
+}
+
+func (c *Client) Validate() error {
+	allPerms := AllPermissions()
+	if c.Permissions == nil || len(c.Permissions) == 0 {
+		return errors.New(fmt.Sprintf("client needs to be given at least one type of privileges, available are: %v", allPerms))
+	}
+	for _, p := range c.Permissions {
+		if !util.ContainsString(p, allPerms) {
+			return errors.New(fmt.Sprintf("permission '%s' is invalid", p))
+		}
+	}
+	return nil
 }
