@@ -2,8 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
-	"github.com/justinas/alice"
+	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
@@ -29,11 +28,12 @@ func NewMailHandler(sendService *service.SendService, clientService *service.Cli
 	}
 }
 
-func (h *MailHandler) Register(router *httprouter.Router, baseChain *alice.Chain) {
-	chain := baseChain.Extend(alice.New(
+func (h *MailHandler) Register(router *mux.Router) {
+	r := router.PathPrefix(routeMail).Subrouter()
+	r.Use(
 		middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionSendMail}),
-	))
-	router.Handler(http.MethodPost, routeMail, chain.ThenFunc(h.post))
+	)
+	r.Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
 func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {

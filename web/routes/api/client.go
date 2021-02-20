@@ -2,8 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
-	"github.com/justinas/alice"
+	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
@@ -26,15 +25,16 @@ func NewClientHandler(clientService *service.ClientService) *ClientHandler {
 	}
 }
 
-func (h *ClientHandler) Register(router *httprouter.Router, baseChain *alice.Chain) {
-	chain := baseChain.Extend(alice.New(
+func (h *ClientHandler) Register(router *mux.Router) {
+	r := router.PathPrefix(routeClient).Subrouter()
+	r.Use(
 		middleware.NewAuthMiddleware(h.clientService, []string{conf.PermissionManageClient}),
-	))
-	router.Handler(http.MethodGet, routeClient+"/:name", chain.ThenFunc(h.getByName))
-	router.Handler(http.MethodPut, routeClient+"/:name", chain.ThenFunc(h.put))
-	router.Handler(http.MethodDelete, routeClient+"/:name", chain.ThenFunc(h.delete))
-	router.Handler(http.MethodGet, routeClient, chain.ThenFunc(h.getAll))
-	router.Handler(http.MethodPost, routeClient, chain.ThenFunc(h.post))
+	)
+	r.Path("/{name}").Methods(http.MethodGet).HandlerFunc(h.getByName)
+	r.Path("/{name}").Methods(http.MethodPut).HandlerFunc(h.put)
+	r.Path("/{name}").Methods(http.MethodDelete).HandlerFunc(h.delete)
+	r.Methods(http.MethodGet).HandlerFunc(h.getAll)
+	r.Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
 func (h *ClientHandler) getAll(w http.ResponseWriter, r *http.Request) {
@@ -50,8 +50,7 @@ func (h *ClientHandler) getAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ClientHandler) getByName(w http.ResponseWriter, r *http.Request) {
-	ps := httprouter.ParamsFromContext(r.Context())
-	client, err := h.clientService.GetByName(ps.ByName("name"))
+	client, err := h.clientService.GetByName(mux.Vars(r)["name"])
 	if err != nil {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
@@ -76,13 +75,12 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ClientHandler) put(w http.ResponseWriter, r *http.Request) {
-	ps := httprouter.ParamsFromContext(r.Context())
 	var payload types.Client
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		util.RespondError(w, r, http.StatusBadRequest, err)
 		return
 	}
-	payload.Name = ps.ByName("name")
+	payload.Name = mux.Vars(r)["name"]
 
 	client, err := h.clientService.Update(&payload)
 	if err != nil {
@@ -93,8 +91,7 @@ func (h *ClientHandler) put(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ClientHandler) delete(w http.ResponseWriter, r *http.Request) {
-	ps := httprouter.ParamsFromContext(r.Context())
-	err := h.clientService.Delete(ps.ByName("name"))
+	err := h.clientService.Delete(mux.Vars(r)["name"])
 	if err != nil {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
