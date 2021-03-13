@@ -25,7 +25,8 @@ type smtpConfig struct {
 }
 
 type webConfig struct {
-	ListenV4 string `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
+	ListenV4    string   `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
+	CorsOrigins []string `yaml:"cors_origins" env:"MW_WEB_CORS_ORIGINS"`
 }
 
 type storeConfig struct {

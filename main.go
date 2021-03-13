@@ -8,6 +8,7 @@ import (
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/web/middleware"
 	"github.com/muety/mailwhale/web/routes/api"
+	"github.com/rs/cors"
 	"github.com/timshannon/bolthold"
 	"net/http"
 	"time"
@@ -40,6 +41,21 @@ func main() {
 	recoverMiddleware := handlers.RecoveryHandler()
 	loggingMiddleware := middleware.NewLoggingMiddleware(logbuch.Info, []string{})
 
+	// CORS
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: config.Web.CorsOrigins,
+		AllowedMethods: []string{
+			http.MethodHead,
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+		},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
 	// Configure routing
 	router := mux.NewRouter()
 	router.Use(recoverMiddleware, loggingMiddleware)
@@ -49,7 +65,9 @@ func main() {
 	api.NewMailHandler().Register(router)
 	api.NewClientHandler().Register(router)
 
-	listen(router, config)
+	handler := corsHandler.Handler(router)
+
+	listen(handler, config)
 }
 
 func listen(handler http.Handler, config *conf.Config) {

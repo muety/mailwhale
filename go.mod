@@ -10,6 +10,7 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/configor v1.2.1
+	github.com/rs/cors v1.7.0
 	github.com/timshannon/bolthold v0.0.0-20200817130212-4a25ab140645
 	go.etcd.io/bbolt v1.3.5 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
