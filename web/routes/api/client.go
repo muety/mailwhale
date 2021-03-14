@@ -7,7 +7,7 @@ import (
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/util"
-	"github.com/muety/mailwhale/web/middleware"
+	"github.com/muety/mailwhale/web/handlers"
 	"net/http"
 )
 
@@ -30,7 +30,7 @@ func NewClientHandler() *ClientHandler {
 func (h *ClientHandler) Register(router *mux.Router) {
 	r := router.PathPrefix(routeClient).Subrouter()
 	r.Use(
-		middleware.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionManageClient}),
+		handlers.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionManageClient}),
 	)
 	r.Path("/{id}").Methods(http.MethodGet).HandlerFunc(h.getById)
 	r.Path("/{id}").Methods(http.MethodDelete).HandlerFunc(h.delete)

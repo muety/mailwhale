@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/emvi/logbuch"
-	"github.com/gorilla/handlers"
+	ghandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
-	"github.com/muety/mailwhale/web/middleware"
+	"github.com/muety/mailwhale/web/handlers"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/rs/cors"
 	"github.com/timshannon/bolthold"
@@ -38,8 +38,8 @@ func main() {
 	initDefaults()
 
 	// Global middlewares
-	recoverMiddleware := handlers.RecoveryHandler()
-	loggingMiddleware := middleware.NewLoggingMiddleware(logbuch.Info, []string{})
+	recoverMiddleware := ghandlers.RecoveryHandler()
+	loggingMiddleware := handlers.NewLoggingMiddleware(logbuch.Info, []string{})
 
 	// CORS
 	corsHandler := cors.New(cors.Options{
@@ -57,7 +57,7 @@ func main() {
 	})
 
 	// Configure routing
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 	router.Use(recoverMiddleware, loggingMiddleware)
 
 	// Handlers
@@ -66,6 +66,12 @@ func main() {
 	api.NewClientHandler().Register(router)
 
 	handler := corsHandler.Handler(router)
+
+	// Static routes
+	router.PathPrefix("/").Handler(handlers.SPAHandler{
+		StaticPath: "./webui/public",
+		IndexPath:  "index.html",
+	})
 
 	listen(handler, config)
 }

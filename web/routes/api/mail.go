@@ -8,7 +8,7 @@ import (
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/types/dto"
 	"github.com/muety/mailwhale/util"
-	"github.com/muety/mailwhale/web/middleware"
+	"github.com/muety/mailwhale/web/handlers"
 	"net/http"
 )
 
@@ -33,7 +33,7 @@ func NewMailHandler() *MailHandler {
 func (h *MailHandler) Register(router *mux.Router) {
 	r := router.PathPrefix(routeMail).Subrouter()
 	r.Use(
-		middleware.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionSendMail}),
+		handlers.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionSendMail}),
 	)
 	r.Methods(http.MethodPost).HandlerFunc(h.post)
 }

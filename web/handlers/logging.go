@@ -1,4 +1,4 @@
-package middleware
+package handlers
 
 // Borrowed from https://gist.github.com/elithrar/887d162dfd0c539b700ab4049c76e22b
 
