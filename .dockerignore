@@ -1,5 +1,4 @@
 .idea
-config*.yml
-!config.default.yml
 mailwhale
 *.db
+webui/public/build
