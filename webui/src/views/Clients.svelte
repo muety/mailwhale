@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte'
-  import { slide, fly } from 'svelte/transition'
 
   import Layout from '../layouts/Main.svelte'
   import Navigation from '../components/Navigation.svelte'
@@ -79,7 +78,7 @@
 
       {#if newClient.apiKey}
         <div
-          class="flex flex-col space-y-2 mt-4 mb-12 bg-primary px-4 py-2 w-full rounded text-white text-sm" transition:fly>
+          class="flex flex-col space-y-2 mt-4 mb-12 bg-primary px-4 py-2 w-full rounded text-white text-sm">
           <div>
             <span class="font-semibold">Success!</span>
             <span>A new client was created. Here is your client secret (aka. API
@@ -92,7 +91,7 @@
 
       <div class="flex flex-col space-y-4">
         {#each clients as client, i}
-          <div class="client-card" in:slide>
+          <div class="client-card">
             <div class="info">
               <span class="text-sm font-semibold">#{i + 1}</span>
               <span
