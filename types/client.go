@@ -79,5 +79,15 @@ func (c *Client) Validate() error {
 			return errors.New(fmt.Sprintf("permission '%s' is invalid", p))
 		}
 	}
+	if c.DefaultSender != "" && !c.DefaultSender.Valid() {
+		return errors.New("invalid default sender address")
+	}
+	if c.AllowedSenders != nil && len(c.AllowedSenders) > 0 {
+		for _, e := range c.AllowedSenders {
+			if !e.Valid() {
+				return errors.New("invalid allowed sender address")
+			}
+		}
+	}
 	return nil
 }

@@ -1,4 +1,5 @@
 import { user } from '../stores/auth'
+import { errors } from '../stores/alerts'
 
 function apiUrl() {
     return process.env.apiUrl || '/api'
@@ -25,7 +26,8 @@ async function request(path, data, options) {
     }
 
     if (response.status >= 400) {
-        throw new Error(`request faield with status ${response.status}`)
+        errors.spawn(`Error (${response.status}): ${await response.text()}`)
+        throw new Error(`request failed with status ${response.status}`)
     }
 
     return { data: response.json(), response: response }

@@ -5,13 +5,13 @@
         <li class="flex space-x-2">
             <span class="material-icons">vpn_key</span>
             <a
-                href="#"
+                href="clients"
                 class="hover:text-gray-800">API Clients</a>
         </li>
         <li class="flex space-x-2">
             <span class="material-icons">email</span>
             <a
-                href="#"
+                href="mails"
                 class="hover:text-gray-800">Test E-Mail</a>
         </li>
     </ul>

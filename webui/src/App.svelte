@@ -2,6 +2,7 @@
   import router from 'page'
   import Home from './views/Home.svelte'
   import Clients from './views/Clients.svelte'
+  import Mails from './views/Mails.svelte';
 
   import { user } from './stores/auth'
 
@@ -17,6 +18,7 @@
   router('/', () => (page = Home))
   router('/login', () => (page = Home))
   router('/clients', () => (page = Clients))
+  router('/mails', () => (page = Mails))
 
   router.start()
 </script>

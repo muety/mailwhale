@@ -79,6 +79,11 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 
 	payload.UserId = reqClient.UserId
 
+	if err := payload.Validate(); err != nil {
+		util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
+		return
+	}
+
 	client, err := h.clientService.Create(&payload)
 	if err != nil {
 		util.RespondError(w, r, http.StatusConflict, err)

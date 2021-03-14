@@ -15,8 +15,7 @@
     <span class="text-sm flex items-center"><span class="material-icons mr-1">person</span> {currentUser}</span>
     <span>|</span>
     <a
-      href="#"
-      class="text-sm text-primary hover:text-primary-dark"
+      class="text-sm text-primary hover:text-primary-dark cursor-pointer"
       on:click={logout}>Logout</a>
   {:else}
     <a
