@@ -12,10 +12,13 @@ function baseHeaders() {
     }
 }
 
-async function request(path, options) {
+async function request(path, data, options) {
     options.headers = { ...baseHeaders(), ...(options.headers || {}) }
+    if (data) {
+        options = { ...options, ...{ body: JSON.stringify(data) } }
+    }
     const response = await fetch(`${apiUrl()}${path.startsWith('/') ? '' : '/'}${path}`, options)
-    
+
     if (response.status === 401) {
         user.logout()
         window.location.replace('/')

@@ -1374,6 +1374,11 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+svelte-click-outside@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/svelte-click-outside/-/svelte-click-outside-1.0.0.tgz#94a823779e3613ae0bdadc53f26916fdd64cb09e"
+  integrity sha512-TVDn5Vd8L0WI0Y9BFh/2I7judkIqYCbFKkGwGl/f8D0inwBFNyU0weKhrbJY4VQtYnWriq0NPl+mIYGisgALbw==
+
 svelte-preprocess@^4.6.9:
   version "4.6.9"
   resolved "https://registry.yarnpkg.com/svelte-preprocess/-/svelte-preprocess-4.6.9.tgz#073d923eb351b98b6c6a454ba5feee981cd9dbf5"

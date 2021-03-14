@@ -15,7 +15,8 @@ module.exports = {
       },
       colors: {
         'primary': 'var(--color-primary)',
-        'primary-dark': 'var(--color-primary-dark)'
+        'primary-dark': 'var(--color-primary-dark)',
+        'primary-light': 'var(--color-primary-light)'
       },
       textColor: {
         default: 'var(--color-text)',

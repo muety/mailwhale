@@ -12,7 +12,7 @@
 
 <div class="flex space-x-2 items-center h-full">
   {#if currentUser}
-    <span class="text-sm">👤 {currentUser}</span>
+    <span class="text-sm flex items-center"><span class="material-icons mr-1">person</span> {currentUser}</span>
     <span>|</span>
     <a
       href="#"
