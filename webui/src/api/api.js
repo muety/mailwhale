@@ -14,7 +14,7 @@ function baseHeaders() {
 
 async function request(path, options) {
     options.headers = { ...baseHeaders(), ...(options.headers || {}) }
-    const response = await fetch(`${apiUrl()}/${path}`, options)
+    const response = await fetch(`${apiUrl()}${path.startsWith('/') ? '' : '/'}${path}`, options)
     
     if (response.status === 401) {
         user.logout()
