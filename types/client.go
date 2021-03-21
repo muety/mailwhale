@@ -7,14 +7,16 @@ import (
 )
 
 const (
-	PermissionSendMail     = "send_mail"
-	PermissionManageClient = "manage_client"
+	PermissionSendMail       = "send_mail"
+	PermissionManageClient   = "manage_client"
+	PermissionManageTemplate = "manage_template"
 )
 
 func AllPermissions() []string {
 	return []string{
 		PermissionSendMail,
 		PermissionManageClient,
+		PermissionManageTemplate,
 	}
 }
 

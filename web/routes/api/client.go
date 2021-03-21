@@ -34,8 +34,8 @@ func (h *ClientHandler) Register(router *mux.Router) {
 	)
 	r.Path("/{id}").Methods(http.MethodGet).HandlerFunc(h.getById)
 	r.Path("/{id}").Methods(http.MethodDelete).HandlerFunc(h.delete)
-	r.Methods(http.MethodGet).HandlerFunc(h.get)
-	r.Methods(http.MethodPost).HandlerFunc(h.post)
+	r.Path("/").Methods(http.MethodGet).HandlerFunc(h.get)
+	r.Path("/").Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
 func (h *ClientHandler) get(w http.ResponseWriter, r *http.Request) {

@@ -22,6 +22,12 @@ func RespondJson(w http.ResponseWriter, status int, object interface{}) {
 	}
 }
 
+func RespondHtml(w http.ResponseWriter, status int, data string) {
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(status)
+	w.Write([]byte(data))
+}
+
 func RespondError(w http.ResponseWriter, r *http.Request, status int, err error) {
 	logbuch.Error("request '%s %s' failed: %v", r.Method, r.URL.Path, err)
 	w.WriteHeader(status)

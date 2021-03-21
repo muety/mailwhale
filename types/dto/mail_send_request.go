@@ -8,6 +8,6 @@ type MailSendRequest struct {
 	Subject      string
 	Text         string
 	Html         string
-	TemplateId   uint
-	TemplateData map[string]interface{}
+	TemplateId   string
+	TemplateVars map[string]string
 }
