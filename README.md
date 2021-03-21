@@ -25,6 +25,8 @@ You get a simple **REST API**, which you can call to send out e-mail. You can pl
 
 Stay tuned, there is a lot more to come.
 
+![](assets/screenshot01.png)
+
 ## 🚧 Project State
 The project is in a very early stage and breaking changes are likely to happen. We'd recommend to not yet use this in production or at least expect non-trivial effort required to upgrade to a new version.
 
@@ -73,6 +75,8 @@ $ docker run -d \
 **Note:** An official Docker image is about to come. Also, there will be no need to mount your config file into the container, as everything will be configurable using environment variables eventually. 
 
 ## ⌨️ Usage
+First of all, you can get most tasks done through the web UI, available at http://localhost:3000.
+
 ### 1. Define a user
 To get started with MailWhale, you need to create a **user** first. Currently, this is done through hard-coded config (see `seed_users` in [config.default.yml](config.default.yml)). Later on, once we have a web UI, there will be a way to easily sign up new users at runtime. 
 
@@ -121,9 +125,7 @@ $ echo "Authorization: Basic $(echo '<client_id>:<client_secret>' | base64)"
 
 ### 3. Send E-Mails
 
-Authenticating against the API currently 
-
-
+#### Plain text or HTML
 ```bash
 $ curl -XPOST \
   -u '<client_id>:<client_secret>' \
@@ -139,13 +141,28 @@ $ curl -XPOST \
 
 You can also a `text` field instead, to send a plain text message.
 
+#### Using a template
+In case you have created a template using the web UI, you can reference it in a new mail like so:
+```bash
+$ curl -XPOST \
+  -u '<client_id>:<client_secret>' \
+  -H 'content-type: application/json' \
+  --data '{
+      "from": "Epic Juice Store <noreply@epicjuicestore.org>",
+      "to": ["Jane Doe <jane@doe.com>"],
+      "subject": "Dinner tonight?",
+      "template_id": "8033ea08-2630-408b-82f9-d38b403243d0",
+      "template_vars: {
+        "text.greeting": "Hello new user!",
+    }
+  }' \
+  'http://localhost:3000/api/mail'
+```
+
 ## 🚀 Features (planned)
 
 Right now, this app is very basic. However, there are several cool features on our roadmap.
 
-* **Mail Templates:** Users will be able to create complex (HTML) templates or presets for their mails, which can then
-  be referenced in send requests.
-* **Web UI:** A nice-looking web UI will make client- and template management easier.
 * **Bounce handling:** Ultimately, we want to offer the ability to plug an IMAP server in addition, to get notified about
   bounced / undelivered mails.
 * **Statistics:** There will be basic statistics about when which client has sent how many mails, how many were

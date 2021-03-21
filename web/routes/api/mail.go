@@ -38,7 +38,7 @@ func (h *MailHandler) Register(router *mux.Router) {
 	r.Use(
 		handlers.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionSendMail}),
 	)
-	r.Path("/").Methods(http.MethodPost).HandlerFunc(h.post)
+	r.Path("").Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
 func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {

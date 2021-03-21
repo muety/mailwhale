@@ -8,6 +8,7 @@ import (
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/util"
 	"github.com/muety/mailwhale/web/handlers"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -34,11 +35,13 @@ func (h *TemplateHandler) Register(router *mux.Router) {
 	r.Use(
 		handlers.NewAuthMiddleware(h.clientService, h.userService, []string{types.PermissionManageTemplate}),
 	)
+	r.Path("/default/content").Methods(http.MethodGet).HandlerFunc(h.getDefaultContent)
 	r.Path("/{id}").Methods(http.MethodGet).HandlerFunc(h.getById)
+	r.Path("/{id}").Methods(http.MethodPut).HandlerFunc(h.put)
 	r.Path("/{id}").Methods(http.MethodDelete).HandlerFunc(h.delete)
 	r.Path("/{id}/rendered").Methods(http.MethodPost).HandlerFunc(h.render)
-	r.Path("/").Methods(http.MethodGet).HandlerFunc(h.get)
-	r.Path("/").Methods(http.MethodPost).HandlerFunc(h.post)
+	r.Path("").Methods(http.MethodGet).HandlerFunc(h.get)
+	r.Path("").Methods(http.MethodPost).HandlerFunc(h.post)
 }
 
 func (h *TemplateHandler) get(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +68,15 @@ func (h *TemplateHandler) getById(w http.ResponseWriter, r *http.Request) {
 	util.RespondJson(w, http.StatusOK, template)
 }
 
+func (h *TemplateHandler) getDefaultContent(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadFile("assets/default_template.html")
+	if err != nil {
+		util.RespondError(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	util.RespondHtml(w, http.StatusOK, string(data))
+}
+
 func (h *TemplateHandler) post(w http.ResponseWriter, r *http.Request) {
 	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
 
@@ -84,6 +96,33 @@ func (h *TemplateHandler) post(w http.ResponseWriter, r *http.Request) {
 	util.RespondJson(w, http.StatusCreated, template)
 }
 
+func (h *TemplateHandler) put(w http.ResponseWriter, r *http.Request) {
+	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
+
+	var payload types.Template
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		util.RespondError(w, r, http.StatusBadRequest, err)
+		return
+	}
+
+	if t, err := h.templateService.GetById(mux.Vars(r)["id"]); err != nil {
+		util.RespondError(w, r, http.StatusNotFound, err)
+		return
+	} else if t.UserId != reqClient.UserId {
+		util.RespondError(w, r, http.StatusNotFound, err)
+		return
+	}
+
+	payload.UserId = reqClient.UserId
+
+	existingTemplate, err := h.templateService.Update(&payload)
+	if err != nil {
+		util.RespondError(w, r, http.StatusConflict, err)
+		return
+	}
+	util.RespondJson(w, http.StatusOK, existingTemplate)
+}
+
 func (h *TemplateHandler) delete(w http.ResponseWriter, r *http.Request) {
 	reqClient := r.Context().Value(conf.KeyClient).(*types.Client)
 
@@ -98,7 +137,7 @@ func (h *TemplateHandler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.clientService.Delete(mux.Vars(r)["id"]); err != nil {
+	if err := h.templateService.Delete(mux.Vars(r)["id"]); err != nil {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}

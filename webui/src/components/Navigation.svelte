@@ -9,6 +9,12 @@
                 class="hover:text-gray-800">API Clients</a>
         </li>
         <li class="flex space-x-2">
+            <span class="material-icons">description</span>
+            <a
+                href="templates"
+                class="hover:text-gray-800">Templates</a>
+        </li>
+        <li class="flex space-x-2">
             <span class="material-icons">email</span>
             <a
                 href="mails"

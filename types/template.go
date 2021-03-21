@@ -7,6 +7,7 @@ import (
 
 type Template struct {
 	ID      string `json:"id"`
+	Name    string `json:"name"`
 	UserId  string `json:"-" boltholdIndex:"UserId"`
 	Content string `json:"content"`
 }
@@ -21,5 +22,5 @@ func (t *Template) FillContent(vars map[string]string) string {
 }
 
 func (t *Template) GuessIsHtml() bool {
-	return strings.Contains(t.Content, "<html>")
+	return strings.Contains(t.Content, "<html")
 }

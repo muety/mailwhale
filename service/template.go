@@ -41,6 +41,13 @@ func (s *TemplateService) Create(template *types.Template) (*types.Template, err
 	return template, nil
 }
 
+func (s *TemplateService) Update(template *types.Template) (*types.Template, error) {
+	if err := s.store.Update(template.ID, template); err != nil {
+		return nil, err
+	}
+	return template, nil
+}
+
 func (s *TemplateService) Delete(id string) error {
 	return s.store.Delete(id, &types.Template{})
 }

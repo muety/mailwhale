@@ -17,7 +17,7 @@
   style="background-color: rgba(0,0,0,.4);">
   <ClickOutside on:clickoutside={close}>
     <div
-      class="h-auto p-4 mx-2 text-left bg-white rounded shadow-md md:max-w-xl md:p-6 lg:p-8 md:mx-0">
+      class="h-auto p-4 mx-2 text-left bg-white rounded shadow-md md:p-6 lg:p-8 md:mx-0">
       <div class="flex flex-col space-y-8">
         <slot name="header" />
         <slot name="main" />

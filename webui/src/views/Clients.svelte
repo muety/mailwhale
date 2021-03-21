@@ -6,7 +6,7 @@
   import Modal from '../components/Modal.svelte'
   import { getClients, createClient, deleteClient } from '../api/clients'
 
-  const availablePermissions = ['send_mail', 'manage_client']
+  const availablePermissions = ['send_mail', 'manage_client', 'manage_template']
 
   let clients = []
 
@@ -95,15 +95,13 @@
           Create</button>
       </div>
 
-      <div class="flex items-center mb-8 space-x-2">
-        <span class="material-icons">info</span>
-        <p>
-          Clients (aka. API tokens) are used to access MailWhale API from
-          external applications, e.g. to send e-mail. Every client is identified
-          by a randomly generated ID and a secret, both of which are needed for
-          authentication against the API.
-        </p>
-      </div>
+      <p class="mb-8">
+        <span class="material-icons" style="font-size: inherit;">info</span>
+        Clients (aka. API tokens) are used to access MailWhale API from external
+        applications, e.g. to send e-mail. Every client is identified by a
+        randomly generated ID and a secret, both of which are needed for
+        authentication against the API.
+      </p>
 
       {#if newClient.api_key}
         <div
@@ -183,7 +181,7 @@
             <div class="flex flex-col w-full space-y-1">
               <label for="desc-input" class="font-semibold">Description</label>
               <input
-                type="desc"
+                type="text"
                 class="border-2 border-primary rounded-md p-2"
                 name="desc-input"
                 placeholder="What will this new client key be used for?"

@@ -3,6 +3,7 @@
   import Home from './views/Home.svelte'
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
+  import Templates from './views/Templates.svelte';
 
   import { user } from './stores/auth'
 
@@ -19,6 +20,7 @@
   router('/login', () => (page = Home))
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))
+  router('/templates', () => (page = Templates))
 
   router.start()
 </script>

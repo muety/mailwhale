@@ -1,9 +1,14 @@
 <script>
+  import { onMount } from 'svelte'
+
   import Layout from '../layouts/Main.svelte'
   import Navigation from '../components/Navigation.svelte'
 
   import { successes } from '../stores/alerts'
   import { sendMail } from '../api/mails'
+  import { getTemplates } from '../api/template'
+
+  import { extractVars } from '../utils/template'
 
   const emptyMail = {
     to: '',
@@ -11,27 +16,57 @@
     subject: '',
     body: '',
     html: false,
+    template_id: null,
+    template_vars: null,
   }
 
   let newMail
 
+  let templates = []
+  let selectedTemplate
+  let templateVarsStr = '{}'
+
+  let sending = false
+
   reset()
 
   async function _sendMail() {
-    await sendMail({
-      from: newMail.from,
-      to: [newMail.to],
-      subject: newMail.subject,
-      html: newMail.html ? newMail.body : null,
-      text: !newMail.html ? newMail.body : null,
-    })
-    successes.spawn('Mail sent successfully!')
-    reset()
+    sending = true
+    try {
+      await sendMail({
+        from: newMail.from,
+        to: [newMail.to],
+        subject: newMail.subject,
+        html: newMail.html && newMail.body ? newMail.body : null,
+        text: !newMail.html && newMail.body ? newMail.body : null,
+        template_id: selectedTemplate ? selectedTemplate.id : null,
+        template_vars: selectedTemplate
+          ? JSON.parse(templateVarsStr || '{}')
+          : null,
+      })
+      successes.spawn('Mail sent successfully!')
+    } finally {
+      reset()
+    }
+  }
+
+  function onTemplateSelected() {
+    if (!selectedTemplate) return
+    templateVarsStr = JSON.stringify(
+      extractVars(selectedTemplate.content),
+      null,
+      4
+    )
   }
 
   function reset() {
     newMail = JSON.parse(JSON.stringify(emptyMail))
+    sending = false
   }
+
+  onMount(async () => {
+    templates = await getTemplates()
+  })
 </script>
 
 <Layout>
@@ -48,9 +83,9 @@
         class="w-full flex flex-col space-y-4"
         on:submit|preventDefault={_sendMail}>
         <div class="flex space-x-2 items-center">
-          <label for="to-input" class="w-1/4">Recipient:</label>
+          <label for="to-input" class="w-1/4 font-semibold">Recipient:</label>
           <input
-            type="to"
+            type="text"
             class="border-2 border-primary rounded-md p-2 flex-grow"
             name="to-input"
             placeholder="E.g. 'John Doe <john@example.org>'"
@@ -59,9 +94,9 @@
         </div>
 
         <div class="flex space-x-2 items-center">
-          <label for="from-input" class="w-1/4">Sender:</label>
+          <label for="from-input" class="w-1/4 font-semibold">Sender:</label>
           <input
-            type="from"
+            type="text"
             class="border-2 border-primary rounded-md p-2 flex-grow"
             name="from-input"
             placeholder="E.g. 'Jane Doe <jane@example.org>'"
@@ -70,9 +105,11 @@
         </div>
 
         <div class="flex space-x-2 items-center">
-          <label for="subject-input" class="w-1/4">Subject:</label>
+          <label
+            for="subject-input"
+            class="w-1/4 font-semibold">Subject:</label>
           <input
-            type="subject"
+            type="text"
             class="border-2 border-primary rounded-md p-2 flex-grow"
             name="subject-input"
             placeholder="Some subject line"
@@ -80,16 +117,43 @@
             bind:value={newMail.subject} />
         </div>
 
-        <div class="flex flex-col mt-4 space-y-2">
-          <label for="message-input">Text</label>
-          <textarea
-            class="border-2 border-primary rounded-md p-2 flex-grow w-full"
-            style="min-height: 300px;"
-            placeholder="Your message"
-            required
-            name="message-input"
-            bind:value={newMail.body} />
+        <div class="flex space-x-2 items-center">
+          <label
+            for="template-input"
+            class="w-1/4 font-semibold">Template:</label>
+          <select
+            class="border-2 border-primary rounded-md p-2 flex-grow cursor-pointer"
+            bind:value={selectedTemplate}
+            on:change={onTemplateSelected}>
+            <option selected value>No template</option>
+            {#each templates as template}
+              <option value={template}>{template.name} ({template.id})</option>
+            {/each}
+          </select>
         </div>
+
+        {#if !selectedTemplate}
+          <div class="flex flex-col mt-4 space-y-2">
+            <label for="message-input" class="font-semibold">Text</label>
+            <textarea
+              class="border-2 border-primary rounded-md p-2 flex-grow w-full"
+              style="min-height: 300px;"
+              placeholder="Your message (text or HTML)"
+              name="message-input"
+              bind:value={newMail.body} />
+          </div>
+        {:else}
+          <div class="flex flex-col mt-4 space-y-2">
+            <label for="vars-input" class="font-semibold">Template Variables
+              (JSON)</label>
+            <textarea
+              class="border-2 border-primary rounded-md p-2 flex-grow w-full"
+              style="min-height: 300px;"
+              placeholder="JSON object of variables to be used in the template"
+              name="vars-input"
+              bind:value={templateVarsStr} />
+          </div>
+        {/if}
 
         <div class="flex justify-between py-2">
           <div class="flex space-x-2 items-center">
@@ -102,8 +166,8 @@
           <button
             type="submit"
             class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"><span
-              class="material-icons">send</span>
-            Send</button>
+              class="material-icons" disabled={sending}>send</span>
+            {sending ? 'Sending ...' : 'Send'}</button>
         </div>
       </form>
     </div>

@@ -30,7 +30,7 @@ async function request(path, data, options) {
         throw new Error(`request failed with status ${response.status}`)
     }
 
-    return { data: response.json(), response: response }
+    return { data: options.raw ? response.text() : response.json(), response: response }
 }
 
 export { apiUrl, baseHeaders, request }
