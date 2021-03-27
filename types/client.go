@@ -88,7 +88,7 @@ func (c *Client) DefaultSender() MailAddress {
 		fmt.Sprintf(
 			"%s+user@%s",
 			strings.ToLower(c.ID[0:conf.ClientIdPrefixLength]),
-			conf.Get().App.DefaultDomain,
+			conf.Get().Mail.Domain,
 		),
 	)
 }

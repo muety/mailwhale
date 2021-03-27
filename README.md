@@ -154,6 +154,27 @@ $ curl -XPOST \
   'http://localhost:3000/api/mail'
 ```
 
+## 🔧 Configuration Options
+You can specify configuration options either via a config file (`config.yml`) or via environment variables. Here is an overview of all options.
+
+| YAML Key                  | Environment Variable      | Default      | Description                                                         |
+|---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
+| `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
+| `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
+| `mail.spf.check`                | `MW_MAIL_SPF_CHECK` | `false`           | Whether to validate sender address domains' SPF records |
+| `mail.spf.authorized_ips`       | -                   | -                 | List of IPs, at least one of which must be included in a sender domain's SPF record to accept the domain in `From` header for outgoing mails |
+| `mail.spf.authorized_delegates` | -         | -       | List of domain names, at least one of which must be included in a sender domain's SPF record as an `include` to accept the domain in `From` header for outgoing mails |
+| `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
+| `web.cors_origin`               | -         | [`http://localhost:5000`]   | List of URLs which to accept CORS requests for |
+| `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
+| `smtp.port`                     | `MW_SMTP_PORT`      | -                 | SMTP relay port |
+| `smtp.username`                 | `MW_SMTP_USER`      | -                 | SMTP relay authentication user name |
+| `smtp.password`                 | `MW_SMTP_PASS`      | -                 | SMTP relay authentication password |
+| `smtp.tls`                      | `MW_SMTP_TLS`       | `false`           | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay |
+| `store.path`                    | `MW_STORE_PATH`     | `./data.gob.db`   | Target location of the database file |
+| `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
+| `security.seed_users`           | -                   | -                 | List of users to initially populate the database with (see above) |
+
 ## 🚀 Features (planned)
 
 Right now, this app is very basic. However, there are several cool features on our roadmap.

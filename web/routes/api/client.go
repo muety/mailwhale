@@ -17,6 +17,7 @@ type ClientHandler struct {
 	config        *conf.Config
 	clientService *service.ClientService
 	userService   *service.UserService
+	spfService    *service.SpfService
 }
 
 func NewClientHandler() *ClientHandler {
@@ -24,6 +25,7 @@ func NewClientHandler() *ClientHandler {
 		config:        conf.Get(),
 		clientService: service.NewClientService(),
 		userService:   service.NewUserService(),
+		spfService:    service.NewSpfService(),
 	}
 }
 
@@ -81,6 +83,13 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 	if err := payload.Validate(); err != nil {
 		util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
 		return
+	}
+
+	if payload.Sender != "" {
+		if err := h.spfService.Validate(payload.Sender.Raw()); err != nil {
+			util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
+			return
+		}
 	}
 
 	client, err := h.clientService.Create(&payload)

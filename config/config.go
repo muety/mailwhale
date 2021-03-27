@@ -24,8 +24,15 @@ type EmailPasswordTuple struct {
 	Password string
 }
 
-type appConfig struct {
-	DefaultDomain string `yaml:"default_domain" env:"MW_APP_DEFAULT_DOMAIN"`
+type mailConfig struct {
+	Domain string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
+	SPF    spfConfig
+}
+
+type spfConfig struct {
+	Check               bool     `env:"MW_MAIL_SPF_CHECK"`
+	AuthorizedIPs       []string `yaml:"authorized_ips"`
+	AuthorizedDelegates []string `yaml:"authorized_delegates"`
 }
 
 type smtpConfig struct {
@@ -53,7 +60,7 @@ type securityConfig struct {
 type Config struct {
 	Env      string `default:"dev" env:"MW_ENV"`
 	Version  string
-	App      appConfig
+	Mail     mailConfig
 	Web      webConfig
 	Smtp     smtpConfig
 	Store    storeConfig
