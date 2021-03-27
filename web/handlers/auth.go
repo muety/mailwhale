@@ -54,13 +54,23 @@ func (m *AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Create dummy client with all permissions
-		user = u
-		client = &types.Client{
-			ID:          types.NewClientIdFrom(user.ID),
-			UserId:      user.ID,
-			Permissions: types.AllPermissions(),
+		// Case 1.1: User requested to be authenticated as a specific client
+		if useClientId := r.Header.Get("X-Client-Id"); useClientId != "" {
+			c, err := m.clientService.GetById(useClientId)
+			if err != nil || c.UserId != u.ID {
+				util.RespondEmpty(w, r, http.StatusUnauthorized)
+				return
+			}
+			client = c
+		} else {
+			// Case 1.2: Create dummy client with all permissions
+			client = &types.Client{
+				ID:          types.NewClientIdFrom(u.ID),
+				UserId:      u.ID,
+				Permissions: types.AllPermissions(),
+			}
 		}
+		user = u
 	} else {
 		// Case 2: Principal is an API client
 		c, err := m.clientService.GetById(clientOrUser)

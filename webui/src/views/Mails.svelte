@@ -7,6 +7,7 @@
   import { successes } from '../stores/alerts'
   import { sendMail } from '../api/mails'
   import { getTemplates } from '../api/template'
+  import { getClients } from '../api/clients'
 
   import { extractVars } from '../utils/template'
 
@@ -25,6 +26,9 @@
   let selectedTemplate
   let templateVarsStr = '{}'
 
+  let clients = []
+  let selectedClient
+
   let sending = false
 
   reset()
@@ -41,7 +45,7 @@
         template_vars: selectedTemplate
           ? JSON.parse(templateVarsStr || '{}')
           : null,
-      })
+      }, selectedClient?.id)
       successes.spawn('Mail sent successfully!')
     } finally {
       reset()
@@ -62,8 +66,14 @@
     sending = false
   }
 
-  onMount(async () => {
-    templates = await getTemplates()
+  onMount(() => {
+    getTemplates()
+      .then((result) => (templates = result))
+      .catch(() => {})
+
+    getClients()
+      .then((result) => (clients = result.filter(c => c.permissions.includes('send_mail'))))
+      .catch(() => {})
   })
 </script>
 
@@ -119,6 +129,20 @@
           </select>
         </div>
 
+        <div class="flex space-x-2 items-center">
+          <label
+            for="template-input"
+            class="w-1/4 font-semibold">Send as API Client:</label>
+          <select
+            class="border-2 border-primary rounded-md p-2 flex-grow cursor-pointer"
+            bind:value={selectedClient}>
+            <option selected value>None (send as user)</option>
+            {#each clients as client}
+              <option value={client}>{client.id} ({client.description})</option>
+            {/each}
+          </select>
+        </div>
+
         {#if !selectedTemplate}
           <div class="flex flex-col mt-4 space-y-2">
             <label for="message-input" class="font-semibold">Text</label>
@@ -153,7 +177,8 @@
           <button
             type="submit"
             class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"><span
-              class="material-icons" disabled={sending}>send</span>
+              class="material-icons"
+              disabled={sending}>send</span>
             {sending ? 'Sending ...' : 'Send'}</button>
         </div>
       </form>

@@ -90,7 +90,7 @@ $ curl -XPOST \
      -H 'Content-Type: application/json' \
      --data-raw '{
          "description": "My juicy web app",
-         "default_sender": "Epic Juice Store <noreply@epicjuicestore.org>",
+         "sender": "Epic Juice Store <noreply@epicjuicestore.org>",
          "permissions": ["send_mail"]
      }' \
      'http://localhost:3000/api/client'
@@ -104,10 +104,7 @@ $ curl -XPOST \
     "permissions": [
         "send_mail"
     ],
-    "default_sender": "Epic Juice Store <noreply@epicjuicestore.org>",
-    "allowed_senders": [
-        "noreply@epicjuicestore.org"
-    ],
+    "sender": "Epic Juice Store <noreply@epicjuicestore.org>",
     "api_key": "75c74447-c4af-453b-ad06-3a8ae969ed16"
 }
 ```
@@ -131,7 +128,6 @@ $ curl -XPOST \
   -u '<client_id>:<client_secret>' \
   -H 'content-type: application/json' \
   --data '{
-      "from": "Epic Juice Store <noreply@epicjuicestore.org>",
       "to": ["Jane Doe <jane@doe.com>"],
       "subject": "Dinner tonight?",
       "html": "<h1>Hey you!</h1><p>Wanna have dinner tonight?</p>"
@@ -148,7 +144,6 @@ $ curl -XPOST \
   -u '<client_id>:<client_secret>' \
   -H 'content-type: application/json' \
   --data '{
-      "from": "Epic Juice Store <noreply@epicjuicestore.org>",
       "to": ["Jane Doe <jane@doe.com>"],
       "subject": "Dinner tonight?",
       "template_id": "8033ea08-2630-408b-82f9-d38b403243d0",
