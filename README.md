@@ -177,7 +177,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 ### SPF Check
 By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `abcdefgh+user@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to perform an [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) record check for their domains to ensure messages won't be considered spam.
 
-As an operator of a MailWhale instance, you need to specify **authorized includes**. They correspond to domains which you, as a server operator, "trust" and therefore delegate SPF handling to. If some domain's SPF record contains one of these delegates as an `include`, the domain is permitted for senders as well. **Usually, there will be only one such authorized include, which corresponds to the domain of your sending mail provider.`
+As an operator of a MailWhale instance, you need to specify **authorized includes**. If some domain's SPF record contains one of these domains as an `include`, the domain is permitted in sender addresses. **Usually, there will be only one such authorized include, which corresponds to the domain of your sending mail provider.**
 
 #### Example
 Say you are using [GMX](https://gmx.net) as your SMTP server and you have some web app, which is supposed to send mails from `Customer Service <noreply@example.org>`.
