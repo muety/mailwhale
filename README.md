@@ -162,8 +162,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
 | `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
 | `mail.spf.check`                | `MW_MAIL_SPF_CHECK` | `false`           | Whether to validate sender address domains' SPF records |
-| `mail.spf.authorized_ips`       | -                   | -                 | List of IPs, at least one of which must be included in a sender domain's SPF record to accept the domain in `From` header for outgoing mails |
-| `mail.spf.authorized_delegates` | -         | -       | List of domain names, at least one of which must be included in a sender domain's SPF record as an `include` to accept the domain in `From` header for outgoing mails |
+| `mail.spf.authorized_includes`  | -                   | -                 | List of domain names, at least one of which must be included in a sender domain's SPF record as an `include` to accept the domain in `From` header for outgoing mails |
 | `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
 | `web.cors_origin`               | -         | [`http://localhost:5000`]   | List of URLs which to accept CORS requests for |
 | `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
@@ -174,6 +173,27 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `store.path`                    | `MW_STORE_PATH`     | `./data.gob.db`   | Target location of the database file |
 | `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
 | `security.seed_users`           | -                   | -                 | List of users to initially populate the database with (see above) |
+
+### SPF Check
+By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `abcdefgh+user@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to perform an [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) record check for their domains to ensure messages won't be considered spam.
+
+As an operator of a MailWhale instance, you need to specify **authorized includes**. They correspond to domains which you, as a server operator, "trust" and therefore delegate SPF handling to. If some domain's SPF record contains one of these delegates as an `include`, the domain is permitted for senders as well. **Usually, there will be only one such authorized include, which corresponds to the domain of your sending mail provider.`
+
+#### Example
+Say you are using [GMX](https://gmx.net) as your SMTP server and you have some web app, which is supposed to send mails from `Customer Service <noreply@example.org>`.
+
+Accordingly, the domain `example.org` must specify an SPF record which contains `include:gmx.net` in order for MailWhale to be able to send mails from that domain, like so:
+```
+example.org.  IN  TXT v=spf1 include:gmx.net
+```
+
+In addition, you config needs to include: 
+```yaml
+mail:
+  spf:
+    authorized_includes:
+      - gmx.net
+```
 
 ## 🚀 Features (planned)
 

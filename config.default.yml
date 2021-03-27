@@ -4,8 +4,7 @@ mail:
   domain: mailwhale.dev               # Your server's domain name
   spf:
     check: true
-    authorized_ips:                   # Option 1: Require specific IPs to be allowed by a sender domain's SPF record
-    authorized_delegates:             # Option 2: Require certain domains to be set as an 'include' in a sender domain's SPF record
+    authorized_includes:             # Require certain domains to be set as an 'include' in a sender domain's SPF record
 
 web:
   listen_v4: '127.0.0.1:3000'         # Where to make the http server listen

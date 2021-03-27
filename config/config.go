@@ -30,9 +30,8 @@ type mailConfig struct {
 }
 
 type spfConfig struct {
-	Check               bool     `env:"MW_MAIL_SPF_CHECK"`
-	AuthorizedIPs       []string `yaml:"authorized_ips"`
-	AuthorizedDelegates []string `yaml:"authorized_delegates"`
+	Check              bool     `env:"MW_MAIL_SPF_CHECK"`
+	AuthorizedIncludes []string `yaml:"authorized_includes"`
 }
 
 type smtpConfig struct {

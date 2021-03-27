@@ -9,6 +9,7 @@ import (
 	"github.com/muety/mailwhale/util"
 	"github.com/muety/mailwhale/web/handlers"
 	"net/http"
+	"strings"
 )
 
 const routeClient = "/api/client"
@@ -86,7 +87,8 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if payload.Sender != "" {
-		if err := h.spfService.Validate(payload.Sender.Raw()); err != nil {
+		senderDomain := strings.Split(payload.Sender.Raw(), "@")[1]
+		if err := h.spfService.Validate(senderDomain); err != nil {
 			util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
 			return
 		}
