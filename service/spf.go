@@ -24,10 +24,8 @@ func (s *SpfService) Validate(domain string) error {
 	}
 
 	for _, rr := range spfRecords {
-		for _, d := range s.config.Mail.SPF.AuthorizedIncludes {
-			if strings.Contains(rr, "include:"+d) {
-				return nil
-			}
+		if strings.Contains(rr, "include:"+s.config.Mail.Domain) {
+			return nil
 		}
 	}
 

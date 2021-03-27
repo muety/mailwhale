@@ -161,8 +161,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 |---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
 | `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
 | `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
-| `mail.spf.check`                | `MW_MAIL_SPF_CHECK` | `false`           | Whether to validate sender address domains' SPF records |
-| `mail.spf.authorized_includes`  | -                   | -                 | List of domain names, at least one of which must be included in a sender domain's SPF record as an `include` to accept the domain in `From` header for outgoing mails |
+| `mail.spf_check`                | `MW_MAIL_SPF_CHECK` | `false`           | Whether to validate sender address domains' SPF records |
 | `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
 | `web.cors_origin`               | -         | [`http://localhost:5000`]   | List of URLs which to accept CORS requests for |
 | `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
@@ -175,25 +174,14 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `security.seed_users`           | -                   | -                 | List of users to initially populate the database with (see above) |
 
 ### SPF Check
-By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `abcdefgh+user@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to perform an [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) record check for their domains to ensure messages won't be considered spam.
+By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `abcdefgh+user@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
 
-As an operator of a MailWhale instance, you need to specify **authorized includes**. If some domain's SPF record contains one of these domains as an `include`, the domain is permitted in sender addresses. **Usually, there will be only one such authorized include, which corresponds to the domain of your sending mail provider.**
-
-#### Example
-Say you are using [GMX](https://gmx.net) as your SMTP server and you have some web app, which is supposed to send mails from `Customer Service <noreply@example.org>`.
-
-Accordingly, the domain `example.org` must specify an SPF record which contains `include:gmx.net` in order for MailWhale to be able to send mails from that domain, like so:
+**As a user**, you need to configure your domain, which you want to use as part of your senders address (e.g. `example.org` for sending mails from `User Server <noreply@example.org>`), to publish an SPF record that delegates to the domain under which MailWhale is running (e.g. mailwhale.dev).
 ```
 example.org.  IN  TXT v=spf1 include:gmx.net
 ```
 
-In addition, you config needs to include: 
-```yaml
-mail:
-  spf:
-    authorized_includes:
-      - gmx.net
-```
+**As a server operator** of a MailWhale instance, you need to enable `mail.spf_check` and set your `mail.domain`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts). 
 
 ## 🚀 Features (planned)
 

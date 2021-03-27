@@ -2,9 +2,7 @@ env: dev                              # Affects log level and a few other things
 
 mail:
   domain: mailwhale.dev               # Your server's domain name
-  spf:
-    check: true
-    authorized_includes:             # Require certain domains to be set as an 'include' in a sender domain's SPF record
+  spf_check: true
 
 web:
   listen_v4: '127.0.0.1:3000'         # Where to make the http server listen

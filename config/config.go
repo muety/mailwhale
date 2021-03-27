@@ -25,13 +25,8 @@ type EmailPasswordTuple struct {
 }
 
 type mailConfig struct {
-	Domain string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
-	SPF    spfConfig
-}
-
-type spfConfig struct {
-	Check              bool     `env:"MW_MAIL_SPF_CHECK"`
-	AuthorizedIncludes []string `yaml:"authorized_includes"`
+	Domain   string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
+	SpfCheck bool   `yaml:"spf_check" env:"MW_MAIL_SPF_CHECK"`
 }
 
 type smtpConfig struct {
