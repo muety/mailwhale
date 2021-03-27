@@ -45,3 +45,12 @@ func (m *Mail) String() string {
 func (m *Mail) Reader() *strings.Reader {
 	return strings.NewReader(m.String())
 }
+
+type MailSendRequest struct {
+	To           MailAddresses     `json:"to"`
+	Subject      string            `json:"subject"`
+	Text         string            `json:"text"`
+	Html         string            `json:"html"`
+	TemplateId   string            `json:"template_id"`
+	TemplateVars map[string]string `json:"template_vars"`
+}

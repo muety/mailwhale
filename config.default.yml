@@ -1,5 +1,8 @@
 env: dev                              # Affects log level and a few other things
 
+app:
+  default_domain: mailwhale.dev       # Your server's domain name
+
 web:
   listen_v4: '127.0.0.1:3000'         # Where to make the http server listen
   cors_origins:

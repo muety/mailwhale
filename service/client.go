@@ -1,11 +1,8 @@
 package service
 
 import (
-	"encoding/base64"
-	"github.com/google/uuid"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/types"
-	"github.com/muety/mailwhale/util"
 	"github.com/timshannon/bolthold"
 )
 
@@ -40,38 +37,20 @@ func (s *ClientService) Create(client *types.Client) (*types.Client, error) {
 	if err := s.store.Insert(client.ID, client); err != nil {
 		return nil, err
 	}
-	return clientDto, nil
+	return clientDto.Sanitize(), nil
 }
 
 func (s *ClientService) Delete(id string) error {
 	return s.store.Delete(id, &types.Client{})
 }
 
-func (s *ClientService) createApiKey() (key, hash string) {
-	key = uuid.New().String()
-	hash = util.HashBcrypt(key, s.config.Security.Pepper)
-	return key, hash
-}
-
-func (s *ClientService) createId() string {
-	return base64.StdEncoding.EncodeToString([]byte(util.RandomString(16)))
-}
-
 func (s *ClientService) preprocess(client *types.Client) (*types.Client, *types.Client) {
-	client.ID = s.createId()
-	apiKey, hash := s.createApiKey()
+	client.ID = types.NewClientId()
+	apiKey, hash := types.NewClientApiKey()
 	client.ApiKey = &hash
 
 	if client.Permissions == nil {
 		client.Permissions = []string{}
-	}
-
-	if client.AllowedSenders == nil {
-		client.AllowedSenders = []types.MailAddress{}
-	}
-
-	if client.DefaultSender != "" && (!client.AllowsSender(client.DefaultSender) || len(client.AllowedSenders) == 0) {
-		client.AllowedSenders = append(client.AllowedSenders, types.MailAddress(client.DefaultSender.Raw()))
 	}
 
 	clientDto := *client

@@ -64,8 +64,7 @@ func (h *ClientHandler) getById(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}
-	client = client.Sanitize()
-	util.RespondJson(w, http.StatusOK, client)
+	util.RespondJson(w, http.StatusOK, client.Sanitize())
 }
 
 func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {

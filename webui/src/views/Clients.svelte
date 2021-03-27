@@ -14,15 +14,13 @@
     id: null,
     description: '',
     api_key: null,
-    default_sender: null,
-    allowed_senders: null,
+    sender: null,
     permissions: null,
   }
 
   let newClientModal
   let newClient
   let newClientPermissions
-  let newClientAllowedSenders
 
   reset()
 
@@ -33,8 +31,7 @@
         permissions: Object.entries(newClientPermissions)
           .filter((e) => e[1])
           .map((e) => e[0]),
-        default_sender: newClient.default_sender,
-        allowed_senders: (newClientAllowedSenders || '').split('\n'),
+        sender: newClient.sender,
       })
       clients = [...clients, JSON.parse(JSON.stringify(newClient))]
     } finally {
@@ -50,7 +47,6 @@
 
   function reset() {
     newClient = JSON.parse(JSON.stringify(emptyClient))
-    newClientAllowedSenders = null
     newClientPermissions = availablePermissions.reduce(
       (acc, val) => Object.assign(acc, { [val]: false }),
       {}
@@ -134,23 +130,12 @@
                       {/each}
                     </div>
                   {/if}
-                  {#if client.default_sender || client.allowed_senders}
+                  {#if client.sender}
                     <div class="flex space-x-2">
-                      {#if client.default_sender}
-                        <div>
-                          <span class="text-xs font-semibold">Default
-                            Sender:&nbsp;</span>
-                          <span class="text-xs">{client.default_sender}</span>
-                        </div>
-                      {/if}
-                      {#if client.allowed_senders}
-                        <div>
-                          <span class="text-xs font-semibold">Allowed
-                            Senders:&nbsp;</span>
-                          <span
-                            class="text-xs">{client.allowed_senders.join(', ')}</span>
-                        </div>
-                      {/if}
+                      <div>
+                        <span class="text-xs font-semibold">Sender E-Mail:&nbsp;</span>
+                        <span class="text-xs">{client.sender}</span>
+                      </div>
                     </div>
                   {/if}
                 </div>
@@ -206,27 +191,23 @@
 
             <div>
               <h3 class="font-semibold mb-2 mt-2">E-Mail Settings</h3>
+              <div class="mb-4 max-w-screen-md">
+                <div
+                  class="mt-4 bg-primary px-4 py-2 rounded text-white text-sm">
+                  <span class="font-semibold">Please Note:</span>
+                  <span>You can set an optional sender address for this client (e.g. <strong><i>My App &lt;noreply@example.org&gt;</i></strong>), that will be used in the mail's <i>"From"</i> header. However, you need to make sure that SPF and DMARC records are properly set for your domain. You need to authorize MailWhale's servers to send mail on your behalf. If left blank, a default sender address like <strong><i>vldsbgfr+user@mailwhale.dev</i></strong></span> will be used.
+                </div>
+              </div>
               <div class="flex items-center space-x-2">
                 <label
                   for="default-sender-input"
-                  class="text-sm font-semibold">Default Sender E-Mail:</label>
+                  class="text-sm font-semibold">Sender E-Mail:</label>
                 <input
                   type="text"
                   name="default-sender-input"
                   class="border-2 border-primary rounded-md p-2 flex-grow"
-                  placeholder="Optional"
-                  bind:value={newClient.default_sender} />
-              </div>
-
-              <div class="mt-4">
-                <label
-                  for="allowed-senders-input"
-                  class="text-sm font-semibold">Allowed Sender E-Mails:</label>
-                <textarea
-                  name="allowed-senders-input"
-                  class="w-full text-sm border-2 border-primary rounded-md p-2 flex-grow"
-                  placeholder="Optional. Line-separated list from allowed e-mail senders (e.g. 'John Doe <john@example.org>')"
-                  bind:value={newClientAllowedSenders} />
+                  placeholder="Leave empty for default"
+                  bind:value={newClient.sender} />
               </div>
             </div>
 

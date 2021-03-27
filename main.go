@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
+	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/web/handlers"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/rs/cors"
@@ -109,7 +110,10 @@ func initDefaults() {
 			continue
 		}
 
-		user, err := userService.Create(&u)
+		user, err := userService.Create(&types.Signup{
+			Email:    u.Email,
+			Password: u.Password,
+		})
 		if err != nil {
 			logbuch.Fatal("failed to create seed user '%s': %v", u.Email, err)
 		}

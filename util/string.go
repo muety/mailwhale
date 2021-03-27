@@ -1,6 +1,9 @@
 package util
 
 import (
+	"crypto/md5"
+	"encoding/binary"
+	"io"
 	"math/rand"
 	"regexp"
 	"time"
@@ -19,11 +22,23 @@ func init() {
 }
 
 func RandomString(n int) string {
-	gen := rand.New(rand.NewSource(time.Now().UnixNano()))
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return randomString(n, rnd)
+}
+
+func RandomStringSeeded(n int, seed string) string {
+	md5h := md5.New()
+	io.WriteString(md5h, seed)
+	var seedInt uint64 = binary.BigEndian.Uint64(md5h.Sum(nil))
+	rnd := rand.New(rand.NewSource(int64(seedInt)))
+	return randomString(n, rnd)
+}
+
+func randomString(n int, rnd *rand.Rand) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	s := make([]rune, n)
 	for i := range s {
-		s[i] = letters[gen.Intn(len(letters))]
+		s[i] = letters[rnd.Intn(len(letters))]
 	}
 	return string(s)
 }

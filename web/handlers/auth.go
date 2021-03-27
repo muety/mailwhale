@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
 	"github.com/muety/mailwhale/types"
@@ -58,10 +57,9 @@ func (m *AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// Create dummy client with all permissions
 		user = u
 		client = &types.Client{
-			ID:            fmt.Sprintf("_%s", user.ID),
-			UserId:        user.ID,
-			Permissions:   types.AllPermissions(),
-			DefaultSender: types.MailAddress(user.ID),
+			ID:          types.NewClientIdFrom(user.ID),
+			UserId:      user.ID,
+			Permissions: types.AllPermissions(),
 		}
 	} else {
 		// Case 2: Principal is an API client

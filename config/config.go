@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/emvi/logbuch"
 	"github.com/jinzhu/configor"
-	"github.com/muety/mailwhale/types"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -15,6 +14,19 @@ const (
 	KeyUser   = "user"
 	KeyClient = "client"
 )
+
+const (
+	ClientIdPrefixLength = 8
+)
+
+type EmailPasswordTuple struct {
+	Email    string
+	Password string
+}
+
+type appConfig struct {
+	DefaultDomain string `yaml:"default_domain" env:"MW_APP_DEFAULT_DOMAIN"`
+}
 
 type smtpConfig struct {
 	Host     string `env:"MW_SMTP_HOST"`
@@ -34,13 +46,14 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper    string         `env:"MW_SECURITY_PEPPER"`
-	SeedUsers []types.Signup `yaml:"seed_users"`
+	Pepper    string               `env:"MW_SECURITY_PEPPER"`
+	SeedUsers []EmailPasswordTuple `yaml:"seed_users"`
 }
 
 type Config struct {
 	Env      string `default:"dev" env:"MW_ENV"`
 	Version  string
+	App      appConfig
 	Web      webConfig
 	Smtp     smtpConfig
 	Store    storeConfig

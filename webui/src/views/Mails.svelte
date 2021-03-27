@@ -12,7 +12,6 @@
 
   const emptyMail = {
     to: '',
-    from: '',
     subject: '',
     body: '',
     html: false,
@@ -34,7 +33,6 @@
     sending = true
     try {
       await sendMail({
-        from: newMail.from,
         to: [newMail.to],
         subject: newMail.subject,
         html: newMail.html && newMail.body ? newMail.body : null,
@@ -91,17 +89,6 @@
             placeholder="E.g. 'John Doe <john@example.org>'"
             required
             bind:value={newMail.to} />
-        </div>
-
-        <div class="flex space-x-2 items-center">
-          <label for="from-input" class="w-1/4 font-semibold">Sender:</label>
-          <input
-            type="text"
-            class="border-2 border-primary rounded-md p-2 flex-grow"
-            name="from-input"
-            placeholder="E.g. 'Jane Doe <jane@example.org>'"
-            required
-            bind:value={newMail.from} />
         </div>
 
         <div class="flex space-x-2 items-center">
