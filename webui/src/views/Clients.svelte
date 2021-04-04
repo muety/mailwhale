@@ -86,7 +86,7 @@
         <h1 class="text-2xl font-semibold">Manage API Clients</h1>
         <button
           class="flex items-center px-4 py-2 text-white rounded bg-primary hover:bg-primary-dark"
-          on:click|stopPropagation={(e) => (newClientModal = true)}><span
+          on:click|stopPropagation={(e) => (newClientModal = true) && reset()}><span
             class="material-icons">add</span>
           Create</button>
       </div>

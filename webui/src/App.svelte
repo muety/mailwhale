@@ -1,6 +1,7 @@
 <script>
   import router from 'page'
   import Home from './views/Home.svelte'
+  import Login from './views/Login.svelte'
   import Signup from './views/Signup.svelte'
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
@@ -18,7 +19,7 @@
   })
 
   router('/', () => (page = Home))
-  router('/login', () => (page = Home))
+  router('/login', () => (page = Login))
   router('/signup', () => (page = Signup))
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))

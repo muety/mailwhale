@@ -37,7 +37,7 @@ func (s *ClientService) Create(client *types.Client) (*types.Client, error) {
 	if err := s.store.Insert(client.ID, client); err != nil {
 		return nil, err
 	}
-	return clientDto.Sanitize(), nil
+	return clientDto, nil
 }
 
 func (s *ClientService) Delete(id string) error {

@@ -11,7 +11,7 @@
   }
 </script>
 
-<div id="app-container" class="container flex flex-col flex-grow mx-auto my-8">
+<div class="container flex flex-col flex-grow mx-auto my-8">
   <div
     id="alert-container"
     class="absolute inset-x-0 top-0 flex flex-col items-center justify-center w-full py-8 space-y-2">
@@ -58,7 +58,7 @@
     <slot name="content" />
   </main>
 
-  <footer class="flex justify-between text-sm">
+  <footer class="flex justify-between mt-8 text-sm">
     <div class="flex space-x-4">
       <a
         href="https://github.com/muety/mailwhale"
