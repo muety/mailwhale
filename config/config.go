@@ -87,10 +87,6 @@ func Load() *Config {
 		logbuch.Fatal("config option 'listen4' must be specified")
 	}
 
-	if config.Security.SeedUsers == nil || len(config.Security.SeedUsers) == 0 {
-		logbuch.Fatal("you need to create at least one initial user via config.yml as there currently is no way to dynamically create users at runtime")
-	}
-
 	Set(config)
 	return Get()
 }
