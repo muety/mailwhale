@@ -11,13 +11,13 @@
   }
 </script>
 
-<div id="app-container" class="container mx-auto my-8 flex flex-col flex-grow">
+<div id="app-container" class="container flex flex-col flex-grow mx-auto my-8">
   <div
     id="alert-container"
-    class="w-full absolute inset-x-0 top-0 py-8 flex justify-center space-y-2 flex-col items-center">
+    class="absolute inset-x-0 top-0 flex flex-col items-center justify-center w-full py-8 space-y-2">
     {#each $errors as m}
       <div
-        class="flex space-x-2 mt-4 bg-red-500 px-4 py-2 rounded text-white text-sm"
+        class="flex px-4 py-2 mt-4 space-x-2 text-sm text-white bg-red-500 rounded"
         transition:slide>
         <span class="material-icons">warning</span>
         <span>{m}</span>
@@ -25,7 +25,7 @@
     {/each}
     {#each $infos as m}
       <div
-        class="flex space-x-2 mt-4 bg-primary px-4 py-2 rounded text-white text-sm"
+        class="flex px-4 py-2 mt-4 space-x-2 text-sm text-white rounded bg-primary"
         transition:slide>
         <span class="material-icons">info</span>
         <span>{m}</span>
@@ -33,7 +33,7 @@
     {/each}
     {#each $successes as e}
       <div
-        class="flex space-x-2 mt-4 bg-green-500 px-4 py-2 rounded text-white text-sm"
+        class="flex px-4 py-2 mt-4 space-x-2 text-sm text-white bg-green-500 rounded"
         transition:slide>
         <span class="material-icons">check_circle</span>
         <span>{e}</span>
@@ -41,20 +41,20 @@
     {/each}
   </div>
 
-  <header class="flex w-full justify-between">
-    <div id="logo-container" class="flex space-x-4 items-center">
+  <header class="flex justify-between w-full">
+    <a id="logo-container" href="/" class="flex items-center space-x-4">
       <img src="images/logo.svg" alt="Logo" style="max-height: 60px;" />
       <div class="flex">
-        <span class="text-primary text-xl font-semibold">Mail</span>
+        <span class="text-xl font-semibold text-primary">Mail</span>
         <span class="text-xl font-semibold">Whale</span>
       </div>
-    </div>
+    </a>
     <div>
       <AccountIndicator currentUser={$user} on:logout={logout} />
     </div>
   </header>
 
-  <main class="mt-24 flex-grow">
+  <main class="flex-grow mt-24">
     <slot name="content" />
   </main>
 

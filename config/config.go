@@ -47,8 +47,9 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper    string               `env:"MW_SECURITY_PEPPER"`
-	SeedUsers []EmailPasswordTuple `yaml:"seed_users"`
+	Pepper      string               `env:"MW_SECURITY_PEPPER"`
+	AllowSignup bool                 `env:"MW_SECURITY_ALLOW_SIGNUP" yaml:"allow_signup"`
+	SeedUsers   []EmailPasswordTuple `yaml:"seed_users"`
 }
 
 type Config struct {

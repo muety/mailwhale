@@ -6,7 +6,7 @@
   import Modal from '../components/Modal.svelte'
   import { getClients, createClient, deleteClient } from '../api/clients'
 
-  const availablePermissions = ['send_mail', 'manage_client', 'manage_template']
+  const availablePermissions = ['send_mail', 'manage_client', 'manage_user', 'manage_template']
 
   let clients = []
 
@@ -81,11 +81,11 @@
     <div class="w-1/4">
       <Navigation />
     </div>
-    <div class="flex flex-col px-12 w-full w-3/4">
+    <div class="flex flex-col w-3/4 w-full px-12">
       <div class="flex justify-between mb-8">
         <h1 class="text-2xl font-semibold">Manage API Clients</h1>
         <button
-          class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+          class="flex items-center px-4 py-2 text-white rounded bg-primary hover:bg-primary-dark"
           on:click|stopPropagation={(e) => (newClientModal = true)}><span
             class="material-icons">add</span>
           Create</button>
@@ -101,7 +101,7 @@
 
       {#if newClient.api_key}
         <div
-          class="flex flex-col space-y-2 mt-4 mb-12 bg-primary px-4 py-2 w-full rounded text-white text-sm">
+          class="flex flex-col w-full px-4 py-2 mt-4 mb-12 space-y-2 text-sm text-white rounded bg-primary">
           <div>
             <span class="font-semibold">Success!</span>
             <span>A new client was created. Here is your client secret (aka. API
@@ -119,7 +119,7 @@
               <div class="info">
                 <span class="text-sm font-semibold">#{i + 1}</span>
                 <span
-                  class="font-mono text-sm bg-gray-100 p-1 rounded"
+                  class="p-1 font-mono text-sm bg-gray-100 rounded"
                   title="Client ID">{client.id}</span>
                 <div class="flex flex-col">
                   <span class="text-sm">{client.description}</span>
@@ -142,7 +142,7 @@
               </div>
               <div>
                 <a
-                  class="text-sm text-primary hover:text-primary-dark underline cursor-pointer"
+                  class="text-sm underline cursor-pointer text-primary hover:text-primary-dark"
                   on:click={confirm('Are you sure?') && _deleteClient(client.id)}>Remove</a>
               </div>
             </div>
@@ -150,7 +150,7 @@
         </div>
       {:else}
         <div
-          class="w-full py-12 text-gray-500 flex justify-center items-center">
+          class="flex items-center justify-center w-full py-12 text-gray-500">
           <i>No clients available. Create your first one.</i>
         </div>
       {/if}
@@ -161,13 +161,13 @@
         <h1 class="text-2xl font-semibold" slot="header">Add new client</h1>
         <div slot="main" style="min-width: 400px;">
           <form
-            class="w-full flex flex-col space-y-4"
+            class="flex flex-col w-full space-y-4"
             on:submit|preventDefault={_createClient}>
             <div class="flex flex-col w-full space-y-1">
               <label for="desc-input" class="font-semibold">Description</label>
               <input
                 type="text"
-                class="border-2 border-primary rounded-md p-2"
+                class="p-2 border-2 rounded-md border-primary"
                 name="desc-input"
                 placeholder="What will this new client key be used for?"
                 required
@@ -175,9 +175,9 @@
             </div>
 
             <div>
-              <h3 class="font-semibold mb-2 mt-2">Permissions</h3>
+              <h3 class="mt-2 mb-2 font-semibold">Permissions</h3>
               {#each availablePermissions as perm}
-                <div class="flex space-x-2 items-center">
+                <div class="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     name="perm-input-{perm}"
@@ -190,10 +190,10 @@
             </div>
 
             <div>
-              <h3 class="font-semibold mb-2 mt-2">E-Mail Settings</h3>
-              <div class="mb-4 max-w-screen-md">
+              <h3 class="mt-2 mb-2 font-semibold">E-Mail Settings</h3>
+              <div class="max-w-screen-md mb-4">
                 <div
-                  class="mt-4 bg-primary px-4 py-2 rounded text-white text-sm">
+                  class="px-4 py-2 mt-4 text-sm text-white rounded bg-primary">
                   <span class="font-semibold">Please Note:</span>
                   <span>You can set an optional sender address for this client (e.g. <strong><i>My App &lt;noreply@example.org&gt;</i></strong>), that will be used in the mail's <i>"From"</i> header. However, you need to make sure that SPF and DMARC records are properly set for your domain. You need to authorize MailWhale's servers to send mail on your behalf. If left blank, a default sender address like <strong><i>vldsbgfr+user@mailwhale.dev</i></strong></span> will be used.
                 </div>
@@ -205,7 +205,7 @@
                 <input
                   type="text"
                   name="default-sender-input"
-                  class="border-2 border-primary rounded-md p-2 flex-grow"
+                  class="flex-grow p-2 border-2 rounded-md border-primary"
                   placeholder="Leave empty for default"
                   bind:value={newClient.sender} />
               </div>
@@ -215,7 +215,7 @@
               <div />
               <button
                 type="submit"
-                class="py-2 px-4 text-white bg-primary rounded-md hover:bg-primary-dark">Create</button>
+                class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark">Create</button>
             </div>
           </form>
         </div>

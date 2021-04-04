@@ -20,7 +20,8 @@ store:
   path: 'data.gob.db'
 
 security:
-  pepper: 'sshhh'
+  pepper: 'sshhh'                     # Change this!
+  allow_signup: false
   seed_users:
     - email: 'admin@local.host'
-      password: 'admin'
+      password: 'admin'               # Change this!

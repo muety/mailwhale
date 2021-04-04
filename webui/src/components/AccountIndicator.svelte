@@ -10,16 +10,20 @@
   export let currentUser
 </script>
 
-<div class="flex space-x-2 items-center h-full">
+<div class="flex items-center h-full space-x-2">
   {#if currentUser}
-    <span class="text-sm flex items-center"><span class="material-icons mr-1">person</span> {currentUser}</span>
+    <span class="flex items-center text-sm"><span class="mr-1 material-icons">person</span> {currentUser}</span>
     <span>|</span>
     <a
-      class="text-sm text-primary hover:text-primary-dark cursor-pointer"
+      class="text-sm cursor-pointer text-primary hover:text-primary-dark"
       on:click={logout}>Logout</a>
   {:else}
-    <a
+  <a
+    href="/signup"
+    class="font-semibold text-primary hover:text-primary-dark">Sign Up</a>  
+  <span>&nbsp;|&nbsp;</span>
+  <a
       href="/login"
-      class="text-primary hover:text-primary-dark font-semibold">Login</a>
+      class="font-semibold text-primary hover:text-primary-dark">Login</a>
   {/if}
 </div>

@@ -1,6 +1,7 @@
 <script>
   import router from 'page'
   import Home from './views/Home.svelte'
+  import Signup from './views/Signup.svelte'
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
   import Templates from './views/Templates.svelte';
@@ -18,6 +19,7 @@
 
   router('/', () => (page = Home))
   router('/login', () => (page = Home))
+  router('/signup', () => (page = Signup))
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))
   router('/templates', () => (page = Templates))
@@ -38,6 +40,6 @@
   @tailwind utilities;
 </style>
 
-<div id="app-container" class="container mx-auto flex flex-col flex-grow">
+<div id="app-container" class="container flex flex-col flex-grow mx-auto">
   <svelte:component this={page} />
 </div>

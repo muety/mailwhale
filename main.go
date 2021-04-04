@@ -65,6 +65,7 @@ func main() {
 	api.NewHealthHandler().Register(router)
 	api.NewMailHandler().Register(router)
 	api.NewClientHandler().Register(router)
+	api.NewUserHandler().Register(router)
 	api.NewTemplateHandler().Register(router)
 
 	handler := corsHandler.Handler(router)
