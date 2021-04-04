@@ -5,6 +5,7 @@
   import Signup from './views/Signup.svelte'
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
+  import Imprint from './views/Imprint.svelte';
   import Templates from './views/Templates.svelte';
 
   import { user } from './stores/auth'
@@ -23,6 +24,7 @@
   router('/signup', () => (page = Signup))
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))
+  router('/imprint', () => (page = Imprint))
   router('/templates', () => (page = Templates))
 
   router.start()
