@@ -1,7 +1,7 @@
-<nav class="w-40 flex flex-col">
-    <span class="font-semibold mb-4">Settings</span>
+<nav class="flex flex-col w-52">
+    <span class="mb-4 font-semibold">Settings</span>
     <ul
-        class="flex flex-col space-y-4 border-r border-gray-300 w-full py-2">
+        class="flex flex-col w-full py-2 space-y-4 border-r border-gray-300">
         <li class="flex space-x-2">
             <span class="material-icons">vpn_key</span>
             <a
@@ -13,6 +13,12 @@
             <a
                 href="templates"
                 class="hover:text-gray-800">Templates</a>
+        </li>
+        <li class="flex space-x-2">
+            <span class="material-icons">lock</span>
+            <a
+                href="spf"
+                class="hover:text-gray-800">SPF & DKIM</a>
         </li>
         <li class="flex space-x-2">
             <span class="material-icons">email</span>

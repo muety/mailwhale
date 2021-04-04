@@ -6,6 +6,7 @@
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
   import Imprint from './views/Imprint.svelte';
+  import Spf from './views/Spf.svelte';
   import Templates from './views/Templates.svelte';
 
   import { user } from './stores/auth'
@@ -19,12 +20,18 @@
     }
   })
 
-  router('/', () => (page = Home))
+  router('/', () => {
+    if (!!user.getToken()) {
+      router.redirect('/clients')
+    }
+    page = Home
+  })
   router('/login', () => (page = Login))
   router('/signup', () => (page = Signup))
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))
   router('/imprint', () => (page = Imprint))
+  router('/spf', () => (page = Spf))
   router('/templates', () => (page = Templates))
 
   router.start()
