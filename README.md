@@ -181,7 +181,7 @@ By default, mails are sent using a randomly generated address in the `From` head
 
 **As a user**, you need to configure your domain, which you want to use as part of your senders address (e.g. `example.org` for sending mails from `User Server <noreply@example.org>`), to publish an SPF record that delegates to the domain under which MailWhale is running (e.g. mailwhale.dev).
 ```
-example.org.  IN  TXT v=spf1 include:gmx.net
+example.org.  IN  TXT v=spf1 include:mailwhale.dev
 ```
 
 **As a server operator** of a MailWhale instance, you need to enable `mail.spf_check` and set your `mail.domain`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts). 
