@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"github.com/emvi/logbuch"
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
@@ -89,5 +90,6 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logbuch.Info("client '%s' (user '%s') sent mail of %d bytes from '%s' to %v", client.ID, client.UserId, len([]byte(mail.Body)), mail.From, mail.To)
 	util.RespondEmpty(w, r, 0)
 }

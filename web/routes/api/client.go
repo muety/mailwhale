@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/emvi/logbuch"
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
@@ -99,6 +100,8 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusConflict, err)
 		return
 	}
+
+	logbuch.Info("create client '%s' for user '%s' with permissions %v", client.ID, client.UserId, client.Permissions)
 	util.RespondJson(w, http.StatusCreated, client)
 }
 
@@ -121,5 +124,6 @@ func (h *ClientHandler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logbuch.Info("deleted client '%s' for user '%s'", client.ID, client.UserId)
 	util.RespondEmpty(w, r, http.StatusNoContent)
 }

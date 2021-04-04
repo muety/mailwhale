@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"github.com/emvi/logbuch"
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
@@ -57,6 +58,7 @@ func (h *UserHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logbuch.Info("created user '%s'", user.ID)
 	util.RespondJson(w, http.StatusCreated, user)
 }
 
@@ -88,5 +90,6 @@ func (h *UserHandler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logbuch.Info("updated user '%s'", user.ID)
 	util.RespondJson(w, http.StatusOK, user)
 }
