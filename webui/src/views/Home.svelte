@@ -8,7 +8,7 @@
 <div slot="content" class="flex flex-col items-center justify-center space-y-8">
     <img src="images/screenshot.png" alt="Screenshot" width="400px" class="-mt-24"/>
     <h1 class="text-4xl font-semibold text-center">
-      MailWhale is a <span class="text-primary">bring-your-own-SMTP</span> mail relay 
+      MailWhale is a <span class="text-primary">bring-your-own-SMTP</span> mail relay
     </h1>
     <p class="max-w-screen-lg text-center">
       Or, in other words, it is a web service for sending mails via <strong>REST API</strong>. Think of <a href="https://mailgun.com" target="_blank" class="text-primary">Mailgun</a> or <a href="https://sendgrid.com" target="_blank" class="text-primary">SendGrid</a>, except self-hosted and with less features. Or like <a href="https://cuttlefish.io/" target="_blank" class="text-primary">Cuttlefish</a>, but without having to host your own SMTP server. <strong>Plug any SMTP server</strong>, like <a href="https://mail.google.com" target="_blank" class="text-primary">Google Mail</a>, <a href="https://mailbox.org" target="_blank" class="text-primary">Mailbox.org</a>, etc. or a self-hosted one and start sending mails from within your application via simple HTTP requests.
@@ -47,8 +47,9 @@ mail := PlainTextMail{'{'}
 
 payload, _ := json.Marshal(mail)
 
-req, _ := http.NewRequest("https://mailwhale.dev/api/mail", "application/json", bytes.NewBuffer(payload))
+req, _ := http.NewRequest(http.MethodGet, "https://mailwhale.dev/api/mail" bytes.NewBuffer(payload))
 req.SetBasicAuth("<clientId>", "<clientSecret>")
+req.Header.Set("Content-Type", "application/json")
 
 client := &http.Client{'{'}}{'}'}
 client.Do(req)
