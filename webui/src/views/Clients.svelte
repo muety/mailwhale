@@ -195,7 +195,7 @@
                 <div
                   class="px-4 py-2 mt-4 text-sm text-white rounded bg-primary">
                   <span class="font-semibold">Please Note:</span>
-                  <span>You can set an optional sender address for this client (e.g. <strong><i>My App &lt;noreply@example.org&gt;</i></strong>), that will be used in the mail's <i>"From"</i> header. However, you need to make sure that SPF and DMARC records are properly set for your domain. You need to authorize MailWhale's servers to send mail on your behalf. If left blank, a default sender address like <strong><i>vldsbgfr+user@mailwhale.dev</i></strong></span> will be used.
+                  <span>You can set an optional sender address for this client (e.g. <strong><i>My App &lt;noreply@example.org&gt;</i></strong>), that will be used in the mail's <i>"From"</i> header. However, you need to make sure that SPF and DMARC records are properly set for your domain. You need to authorize MailWhale's servers to send mail on your behalf. If left blank, a default sender address like <strong><i>user+vldsbgfr@mailwhale.dev</i></strong></span> will be used.
                 </div>
               </div>
               <div class="flex items-center space-x-2">

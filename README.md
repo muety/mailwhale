@@ -177,7 +177,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `security.seed_users`           | -                   | -                 | List of users to initially populate the database with (see above) |
 
 ### SPF Check
-By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `abcdefgh+user@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
+By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `user+abcdefgh@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
 
 **As a user**, you need to configure your domain, which you want to use as part of your senders address (e.g. `example.org` for sending mails from `User Server <noreply@example.org>`), to publish an SPF record that delegates to the domain under which MailWhale is running (e.g. mailwhale.dev).
 ```
