@@ -121,6 +121,10 @@
         <strong>DKIM</strong>
         is not implemented, yet.
       </p>
+      <br>
+      <p>
+        Chances are, depending on the recipient's mail provider, that you will also have to set proper <strong><a href="https://blog.mailtrap.io/dmarc-explained/" target="_blank">DMARC</a></strong> records in order for your mails to not be considered spam.
+      </p>
 
       <h2 class="mt-8 mb-4 text-lg font-semibold">Your Addresses</h2>
       {#if me && me.senders && me.senders.length}
