@@ -2,9 +2,10 @@ env: dev                              # Affects log level and a few other things
 
 mail:
   domain: mailwhale.dev               # Your server's domain name
-  spf_check: true
+  verify_senders: true                # Whether to send verification mail when adding new sender addresses
 
 web:
+  public_url: 'http://localhost:3000' # Publicly available URL of your instance, required for callback links via e-mail
   listen_v4: '127.0.0.1:3000'         # Where to make the http server listen
   cors_origins:
     - 'http://localhost:5000'
@@ -21,7 +22,4 @@ store:
 
 security:
   pepper: 'sshhh'                     # Change this!
-  allow_signup: false
-  seed_users:
-    - email: 'admin@local.host'
-      password: 'admin'               # Change this!
+  allow_signup: true

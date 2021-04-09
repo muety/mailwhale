@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// TODO: support multipart
-
 type Mail struct {
 	From    MailAddress   `json:"from"`
 	To      MailAddresses `json:"to"`

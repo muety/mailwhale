@@ -25,8 +25,8 @@ type EmailPasswordTuple struct {
 }
 
 type mailConfig struct {
-	Domain   string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
-	SpfCheck bool   `yaml:"spf_check" env:"MW_MAIL_SPF_CHECK"`
+	Domain        string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
+	VerifySenders bool   `yaml:"verify_senders" env:"MW_MAIL_VERIFY_SENDERS"`
 }
 
 type smtpConfig struct {
@@ -40,6 +40,7 @@ type smtpConfig struct {
 type webConfig struct {
 	ListenV4    string   `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
 	CorsOrigins []string `yaml:"cors_origins" env:"MW_WEB_CORS_ORIGINS"`
+	PublicUrl   string   `yaml:"public_url" default:"https://mailwhale.dev/" env:"MW_WEB_PUBLIC_URL"`
 }
 
 type storeConfig struct {
@@ -47,9 +48,8 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper      string               `env:"MW_SECURITY_PEPPER"`
-	AllowSignup bool                 `env:"MW_SECURITY_ALLOW_SIGNUP" yaml:"allow_signup"`
-	SeedUsers   []EmailPasswordTuple `yaml:"seed_users"`
+	Pepper      string `env:"MW_SECURITY_PEPPER"`
+	AllowSignup bool   `env:"MW_SECURITY_ALLOW_SIGNUP" yaml:"allow_signup"`
 }
 
 type Config struct {
@@ -89,6 +89,10 @@ func Load() *Config {
 
 	Set(config)
 	return Get()
+}
+
+func (c *webConfig) GetPublicUrl() string {
+	return strings.TrimSuffix(c.PublicUrl, "/")
 }
 
 func (c *smtpConfig) ConnStr() string {

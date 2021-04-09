@@ -5,9 +5,17 @@
   import Navigation from '../components/Navigation.svelte'
   import Modal from '../components/Modal.svelte'
   import { getClients, createClient, deleteClient } from '../api/clients'
+  import { getMe } from '../api/users'
+  import { user } from '../stores/auth'
 
-  const availablePermissions = ['send_mail', 'manage_client', 'manage_user', 'manage_template']
+  const availablePermissions = [
+    'send_mail',
+    'manage_client',
+    'manage_user',
+    'manage_template',
+  ]
 
+  let me
   let clients = []
 
   const emptyClient = {
@@ -54,6 +62,7 @@
   }
 
   onMount(async () => {
+    me = await getMe()
     clients = await getClients()
   })
 </script>
@@ -195,19 +204,34 @@
                 <div
                   class="px-4 py-2 mt-4 text-sm text-white rounded bg-primary">
                   <span class="font-semibold">Please Note:</span>
-                  <span>You can set an optional sender address for this client (e.g. <strong><i>My App &lt;noreply@example.org&gt;</i></strong>), that will be used in the mail's <i>"From"</i> header. However, you need to make sure that SPF and DMARC records are properly set for your domain. You need to authorize MailWhale's servers to send mail on your behalf. If left blank, a default sender address like <strong><i>user+vldsbgfr@mailwhale.dev</i></strong></span> will be used.
+                  <span>You can set an optional sender address for this client
+                    (e.g.
+                    <strong><i>My App &lt;noreply@example.org&gt;</i></strong>),
+                    that will be used in the mail's
+                    <i>"From"</i>
+                    header. However, you need to make sure that SPF and DMARC
+                    records are properly set for your domain. You need to
+                    authorize MailWhale's servers to send mail on your behalf.
+                    If left blank, a default sender address like
+                    <strong><i>vldsbgfr+user@mailwhale.dev</i></strong></span>
+                  will be used.
                 </div>
               </div>
               <div class="flex items-center space-x-2">
                 <label
                   for="default-sender-input"
                   class="text-sm font-semibold">Sender E-Mail:</label>
-                <input
-                  type="text"
-                  name="default-sender-input"
-                  class="flex-grow p-2 border-2 rounded-md border-primary"
-                  placeholder="Leave empty for default"
-                  bind:value={newClient.sender} />
+                <select
+                  class="border-2 border-primary rounded-md p-2 flex-grow cursor-pointer"
+                  bind:value={newClient.sender}>
+                  <option selected value>Default</option>
+                  {#each me.senders as sender}
+                    <option value={sender.mail}>
+                      {sender.mail}
+                      ({sender.verified ? 'verified' : 'not verified'})
+                    </option>
+                  {/each}
+                </select>
               </div>
             </div>
 

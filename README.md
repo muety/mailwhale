@@ -78,9 +78,7 @@ $ docker run -d \
 First of all, you can get most tasks done through the web UI, available at http://localhost:3000.
 
 ### 1. Define a user
-To get started with MailWhale, you need to create a **user** first.
-To do so, you can either let the application initialize a default user by supplying `security.seed_users` in [config.default.yml](config.default.yml)).
-Alternatively, you can also register new users at runtime via API or web UI. `security.allow_signup` needs to be set to `true`. 
+To get started with MailWhale, you need to create a **user** first. To do so, register a new user API or web UI. `security.allow_signup` needs to be set to `true`. 
 
 ### 2. Create an API client
 It is good practice to not authenticate against the API as a user directly. Instead, create an **API client** with limited privileges, that could easily be revoked in the future. A client is identified by a **client ID** and a **client secret** (or token), very similar to what you might already be familiar with from AWS APIs. Usually, such a client corresponds to an individual client application of yours, which wants to access MailWhale's API. 
@@ -163,9 +161,10 @@ You can specify configuration options either via a config file (`config.yml`) or
 |---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
 | `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
 | `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
-| `mail.spf_check`                | `MW_MAIL_SPF_CHECK` | `false`           | Whether to validate sender address domains' SPF records |
+| `mail.verify_senders`           | `MW_VERIFY_SENDERS` | `true`            | Whether to validate sender addresses and their domains' SPF records |
 | `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
 | `web.cors_origin`               | -                   | [`http://localhost:5000`] | List of URLs which to accept CORS requests for |
+| `web.public_url`                | `MW_PUBLIC_URL`     | `http://localhost:3000` | The URL under which your MailWhale server is available from the public internet |
 | `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
 | `smtp.port`                     | `MW_SMTP_PORT`      | -                 | SMTP relay port |
 | `smtp.username`                 | `MW_SMTP_USER`      | -                 | SMTP relay authentication user name |
@@ -174,9 +173,8 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `store.path`                    | `MW_STORE_PATH`     | `./data.gob.db`   | Target location of the database file |
 | `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
 | `security.allow_signup`         | `MW_SECURITY_ALLOW_SIGNUP` | `false`    | Whether to allow the registration of new users |
-| `security.seed_users`           | -                   | -                 | List of users to initially populate the database with (see above) |
 
-### SPF Check
+### Sender verification & SPF Check
 By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `user+abcdefgh@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
 
 **As a user**, you need to configure your domain, which you want to use as part of your senders address (e.g. `example.org` for sending mails from `User Server <noreply@example.org>`), to publish an SPF record that delegates to the domain under which MailWhale is running (e.g. mailwhale.dev).
@@ -184,7 +182,7 @@ By default, mails are sent using a randomly generated address in the `From` head
 example.org.  IN  TXT v=spf1 include:mailwhale.dev
 ```
 
-**As a server operator** of a MailWhale instance, you need to enable `mail.spf_check` and set your `mail.domain`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts). 
+**As a server operator** of a MailWhale instance, you need to enable `mail.verify_senders` and set your `mail.domain` and `web.public_url`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts). 
 
 ## 🚀 Features (planned)
 

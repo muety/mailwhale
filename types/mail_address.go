@@ -21,6 +21,11 @@ type MailAddress string
 
 type MailAddresses []MailAddress
 
+type SenderAddress struct {
+	MailAddress `json:"mail"`
+	Verified    bool `json:"verified"`
+}
+
 func (m MailAddress) String() string {
 	return string(m)
 }

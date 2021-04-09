@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/service"
-	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/web/handlers"
 	"github.com/muety/mailwhale/web/routes/api"
 	"github.com/rs/cors"
@@ -35,8 +34,6 @@ func main() {
 
 	// Services
 	userService = service.NewUserService()
-
-	initDefaults()
 
 	// Global middlewares
 	recoverMiddleware := ghandlers.RecoveryHandler()
@@ -97,27 +94,4 @@ func listen(handler http.Handler, config *conf.Config) {
 	}()
 
 	<-make(chan interface{}, 1)
-}
-
-func initDefaults() {
-	for _, u := range config.Security.SeedUsers {
-		if user, err := userService.GetById(u.Email); err == nil {
-			user.Password = u.Password
-			user, err = userService.Update(user)
-			if err != nil {
-				logbuch.Fatal("failed to update user '%s': %v", u.Email, err)
-			}
-			logbuch.Info("updated user '%s'", user.ID)
-			continue
-		}
-
-		user, err := userService.Create(&types.Signup{
-			Email:    u.Email,
-			Password: u.Password,
-		})
-		if err != nil {
-			logbuch.Fatal("failed to create seed user '%s': %v", u.Email, err)
-		}
-		logbuch.Info("created seed user '%s'", user.ID)
-	}
 }

@@ -27,7 +27,7 @@ func AllPermissions() []string {
 }
 
 type Client struct {
-	ID          string      `json:"id"`
+	ID          string      `json:"id" boltholdKey:"ID"`
 	Description string      `json:"description"`
 	UserId      string      `json:"-" boltholdIndex:"UserId"`
 	Permissions []string    `json:"permissions"`

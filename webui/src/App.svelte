@@ -6,7 +6,7 @@
   import Clients from './views/Clients.svelte'
   import Mails from './views/Mails.svelte';
   import Imprint from './views/Imprint.svelte';
-  import Spf from './views/Spf.svelte';
+  import Addresses from './views/Addresses.svelte';
   import Templates from './views/Templates.svelte';
 
   import { user } from './stores/auth'
@@ -31,7 +31,7 @@
   router('/clients', () => (page = Clients))
   router('/mails', () => (page = Mails))
   router('/imprint', () => (page = Imprint))
-  router('/spf', () => (page = Spf))
+  router('/addresses', () => (page = Addresses))
   router('/templates', () => (page = Templates))
 
   router.start()

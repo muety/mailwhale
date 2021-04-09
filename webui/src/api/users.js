@@ -4,8 +4,12 @@ async function createUser(signup) {
     return (await request('/user', signup, { method: 'POST' })).data
 }
 
-async function updateUser(id, signup) {
-    return (await request(`/user/${id}`, signup, { method: 'PUT' })).data
+async function getMe() {
+    return (await request('/user/me', null, {})).data
 }
 
-export { createUser, updateUser }
+async function updateMe(data) {
+    return (await request(`/user/me`, data, { method: 'PUT' })).data
+}
+
+export { createUser, updateMe, getMe }

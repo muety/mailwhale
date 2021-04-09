@@ -15,10 +15,10 @@
                 class="hover:text-gray-800">Templates</a>
         </li>
         <li class="flex space-x-2">
-            <span class="material-icons">lock</span>
+            <span class="material-icons">alternate_email</span>
             <a
-                href="spf"
-                class="hover:text-gray-800">SPF & DKIM</a>
+                href="addresses"
+                class="hover:text-gray-800">E-Mail Addresses</a>
         </li>
         <li class="flex space-x-2">
             <span class="material-icons">email</span>

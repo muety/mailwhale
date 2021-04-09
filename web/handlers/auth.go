@@ -30,8 +30,6 @@ func NewAuthMiddleware(clientService *service.ClientService, userService *servic
 }
 
 func (m *AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO: Securecookie auth for web ui
-
 	clientOrUser, credentials, ok := r.BasicAuth()
 	if !ok {
 		util.RespondEmpty(w, r, http.StatusUnauthorized)
@@ -85,6 +83,7 @@ func (m *AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		client = c
+		user, _ = m.userService.GetById(client.UserId)
 	}
 
 	if m.permissions == nil || len(m.permissions) == 0 || client.HasPermissionAnyOf(m.permissions) {

@@ -2,6 +2,8 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/emvi/logbuch"
 	"github.com/gorilla/mux"
 	conf "github.com/muety/mailwhale/config"
@@ -10,7 +12,6 @@ import (
 	"github.com/muety/mailwhale/util"
 	"github.com/muety/mailwhale/web/handlers"
 	"net/http"
-	"strings"
 )
 
 const routeClient = "/api/client"
@@ -19,7 +20,6 @@ type ClientHandler struct {
 	config        *conf.Config
 	clientService *service.ClientService
 	userService   *service.UserService
-	spfService    *service.SpfService
 }
 
 func NewClientHandler() *ClientHandler {
@@ -27,7 +27,6 @@ func NewClientHandler() *ClientHandler {
 		config:        conf.Get(),
 		clientService: service.NewClientService(),
 		userService:   service.NewUserService(),
-		spfService:    service.NewSpfService(),
 	}
 }
 
@@ -87,10 +86,13 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if payload.Sender != "" {
-		senderDomain := strings.Split(payload.Sender.Raw(), "@")[1]
-		if err := h.spfService.Validate(senderDomain); err != nil {
-			util.RespondErrorMessage(w, r, http.StatusBadRequest, err)
+	if payload.Sender != "" && h.config.Mail.VerifySenders {
+		var user *types.User
+		if u := r.Context().Value(conf.KeyUser); u != nil {
+			user = u.(*types.User)
+		}
+		if user == nil || !user.HasVerifiedSender(payload.Sender) {
+			util.RespondErrorMessage(w, r, http.StatusForbidden, errors.New(fmt.Sprintf("'%s' is not a verified sender address", payload.Sender)))
 			return
 		}
 	}
