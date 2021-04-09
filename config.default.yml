@@ -17,7 +17,7 @@ smtp:
   tls: true                           # Whether to connect via SSL/TLS (set 'false' for STARTTLS)
 
 store:
-  path: 'data.gob.db'
+  path: 'data.json.db'
 
 security:
   pepper: 'sshhh'                     # Change this!

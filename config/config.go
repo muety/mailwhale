@@ -43,7 +43,7 @@ type webConfig struct {
 }
 
 type storeConfig struct {
-	Path string `default:"data.gob.db" env:"MW_STORE_PATH"`
+	Path string `default:"data.json.db" env:"MW_STORE_PATH"`
 }
 
 type securityConfig struct {

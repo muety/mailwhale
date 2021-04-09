@@ -32,8 +32,12 @@ ENV MW_SMTP_USER ''
 ENV MW_SMTP_PASS ''
 ENV MW_SMTP_TLS 'false'
 ENV MW_WEB_LISTEN_V4 '0.0.0.0:3000'
+ENV MW_WEB_PUBLIC_URK 'http://localhost:3000'
 ENV MW_SECURITY_PEPPER ''
-ENV MW_STORE_PATH '/data/data.gob.db'
+ENV MW_SECURITY_ALLOW_SIGNUP 'true
+ENV MW_SECURITY_VERIFY_USERS 'true
+ENV MW_SECURITY_VERIFY_SENDERS 'true
+ENV MW_STORE_PATH '/data/data.json.db'
 
 ADD config.yml .
 COPY --from=api-build-env /app .

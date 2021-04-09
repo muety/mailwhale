@@ -169,7 +169,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `smtp.username`                 | `MW_SMTP_USER`      | -                 | SMTP relay authentication user name |
 | `smtp.password`                 | `MW_SMTP_PASS`      | -                 | SMTP relay authentication password |
 | `smtp.tls`                      | `MW_SMTP_TLS`       | `false`           | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay |
-| `store.path`                    | `MW_STORE_PATH`     | `./data.gob.db`   | Target location of the database file |
+| `store.path`                    | `MW_STORE_PATH`     | `./data.json.db`   | Target location of the database file |
 | `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
 | `security.allow_signup`         | `MW_SECURITY_ALLOW_SIGNUP` | `true`    | Whether to allow the registration of new users |
 | `security.verify_users`         | `MW_SECURITY_VERIFY_USERS` | `true`    | Whether to require new users to activate their account using a confirmation mail |
