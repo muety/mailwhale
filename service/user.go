@@ -6,6 +6,7 @@ import (
 	"github.com/emvi/logbuch"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/types"
+	"github.com/muety/mailwhale/types/dto"
 	"github.com/muety/mailwhale/util"
 	"github.com/timshannon/bolthold"
 	"strings"
@@ -43,7 +44,7 @@ func (s *UserService) GetById(id string) (*types.User, error) {
 	return user.Sanitize(), err
 }
 
-func (s *UserService) Create(signup *types.Signup) (*types.User, error) {
+func (s *UserService) Create(signup *dto.Signup) (*types.User, error) {
 	user := &types.User{
 		ID:       signup.Email,
 		Password: util.HashBcrypt(signup.Password, s.config.Security.Pepper),
@@ -55,6 +56,9 @@ func (s *UserService) Create(signup *types.Signup) (*types.User, error) {
 	if err := s.store.Insert(user.ID, user); err != nil {
 		return nil, err
 	}
+	if s.config.Security.VerifyUsers {
+		go s.verifyUser(user)
+	}
 	return user.Sanitize(), nil
 }
 
@@ -64,13 +68,14 @@ func (s *UserService) Update(user *types.User, update *types.User) (*types.User,
 	}
 
 	newSenders := s.extractNewSenders(user, update)
-	if s.config.Mail.VerifySenders {
+	if s.config.Security.VerifySenders {
 		if err := s.spfCheckSenders(newSenders); err != nil {
 			return nil, err
 		}
 		go s.verifySenders(user, newSenders)
 	}
 	user.Senders = update.Senders
+	user.Verified = update.Verified
 
 	if !user.IsValid() {
 		return nil, errors.New("user data invalid")
@@ -107,6 +112,25 @@ func (s *UserService) spfCheckSenders(senders []types.SenderAddress) error {
 	return nil
 }
 
+func (s *UserService) verifyUser(user *types.User) error {
+	verification, err := s.verificationService.Create(types.NewVerification(
+		user,
+		types.VerificationScopeUser,
+		user.ID,
+	))
+	if err != nil {
+		logbuch.Error("failed to create user verification token for '%s'", user.ID)
+		return err
+	}
+	if err := s.mailService.SendUserVerification(user, verification.Token); err != nil {
+		logbuch.Error("failed to send user verification to '%s'", user.ID)
+		return err
+	} else {
+		logbuch.Info("sent user verification mail for '%s'", user.ID)
+	}
+	return nil
+}
+
 // generates verification tokens for senders addresses and sends them via mail
 func (s *UserService) verifySenders(user *types.User, senders []types.SenderAddress) error {
 	for _, sender := range senders {
@@ -116,6 +140,7 @@ func (s *UserService) verifySenders(user *types.User, senders []types.SenderAddr
 			sender.String(),
 		))
 		if err != nil {
+			logbuch.Error("failed to create sender verification token for '%s'", sender.MailAddress.String())
 			return err
 		}
 		if err := s.mailService.SendSenderVerification(user, sender, verification.Token); err != nil {

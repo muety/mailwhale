@@ -63,7 +63,7 @@ func (h *UserHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload types.Signup
+	var payload dto.Signup
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		util.RespondError(w, r, http.StatusBadRequest, err)
 		return
@@ -128,10 +128,10 @@ func (h *UserHandler) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verification.Scope == types.VerificationScopeSender {
-		update := *user // copy
-		update.Password = ""
+	update := *user // copy
+	update.Password = ""
 
+	if verification.Scope == types.VerificationScopeSender {
 		for i, s := range update.Senders {
 			if s.MailAddress.String() == verification.Subject {
 				update.Senders[i].Verified = true
@@ -144,6 +144,13 @@ func (h *UserHandler) verify(w http.ResponseWriter, r *http.Request) {
 		}
 		go h.verificationService.Delete(verification.Token)
 		logbuch.Info("verified sender address '%s' for user '%s'", verification.Subject, user.ID)
+	} else if verification.Scope == types.VerificationScopeUser && verification.Subject == user.ID {
+		update.Verified = true
+		if _, err := h.userService.Update(user, &update); err != nil {
+			util.RespondErrorMessage(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		logbuch.Info("verified user '%s'", user.ID)
 	}
 
 	http.Redirect(w, r, "/", http.StatusFound)

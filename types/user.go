@@ -6,11 +6,7 @@ type User struct {
 	ID       string          `json:"id" boltholdKey:"ID"`
 	Password string          `json:"-"`
 	Senders  []SenderAddress `json:"senders"`
-}
-
-type Signup struct {
-	Email    string `schema:"email"`
-	Password string `schema:"password"`
+	Verified bool            `json:"verified"`
 }
 
 func (u *User) IsValid() bool {

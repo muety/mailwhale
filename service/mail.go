@@ -14,6 +14,7 @@ import (
 
 const (
 	tplPath             = "templates"
+	tplNameVerifyUser   = "user_verification"
 	tplNameVerifySender = "sender_verification"
 )
 
@@ -27,6 +28,39 @@ func NewMailService() *MailService {
 		config:      config.Get(),
 		sendService: NewSendService(),
 	}
+}
+
+func (s *MailService) SendUserVerification(user *types.User, token string) error {
+	tpl, err := s.loadTemplate(tplNameVerifyUser)
+	if err != nil {
+		return err
+	}
+
+	type data struct {
+		VerifyLink string
+	}
+
+	payload := &data{
+		VerifyLink: fmt.Sprintf(
+			"%s/api/user/verify?token=%s",
+			s.config.Web.GetPublicUrl(),
+			token,
+		),
+	}
+
+	var rendered bytes.Buffer
+	if err := tpl.Execute(&rendered, payload); err != nil {
+		return err
+	}
+
+	mail := &types.Mail{
+		From:    types.MailAddress(fmt.Sprintf("MailWhale System <system@%s>", s.config.Mail.Domain)),
+		To:      []types.MailAddress{types.MailAddress(user.ID)},
+		Subject: "Verify your MailWhale account",
+	}
+	mail.WithHTML(rendered.String())
+
+	return s.sendService.Send(mail)
 }
 
 func (s *MailService) SendSenderVerification(user *types.User, sender types.SenderAddress, token string) error {

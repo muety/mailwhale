@@ -161,7 +161,6 @@ You can specify configuration options either via a config file (`config.yml`) or
 |---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
 | `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
 | `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
-| `mail.verify_senders`           | `MW_VERIFY_SENDERS` | `true`            | Whether to validate sender addresses and their domains' SPF records |
 | `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
 | `web.cors_origin`               | -                   | [`http://localhost:5000`] | List of URLs which to accept CORS requests for |
 | `web.public_url`                | `MW_PUBLIC_URL`     | `http://localhost:3000` | The URL under which your MailWhale server is available from the public internet |
@@ -172,7 +171,9 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `smtp.tls`                      | `MW_SMTP_TLS`       | `false`           | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay |
 | `store.path`                    | `MW_STORE_PATH`     | `./data.gob.db`   | Target location of the database file |
 | `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
-| `security.allow_signup`         | `MW_SECURITY_ALLOW_SIGNUP` | `false`    | Whether to allow the registration of new users |
+| `security.allow_signup`         | `MW_SECURITY_ALLOW_SIGNUP` | `true`    | Whether to allow the registration of new users |
+| `security.verify_users`         | `MW_SECURITY_VERIFY_USERS` | `true`    | Whether to require new users to activate their account using a confirmation mail |
+| `security.verify_senders`       | `MW_SECURITY_VERIFY_SENDERS` | `true`  | Whether to validate sender addresses and their domains' SPF records |
 
 ### Sender verification & SPF Check
 By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `user+abcdefgh@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.

@@ -2,7 +2,6 @@ env: dev                              # Affects log level and a few other things
 
 mail:
   domain: mailwhale.dev               # Your server's domain name
-  verify_senders: true                # Whether to send verification mail when adding new sender addresses
 
 web:
   public_url: 'http://localhost:3000' # Publicly available URL of your instance, required for callback links via e-mail
@@ -23,3 +22,5 @@ store:
 security:
   pepper: 'sshhh'                     # Change this!
   allow_signup: true
+  verify_users: true                  # Whether to send verification mail when registering a new user
+  verify_senders: true                # Whether to send verification mail when adding new sender addresses

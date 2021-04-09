@@ -25,8 +25,7 @@ type EmailPasswordTuple struct {
 }
 
 type mailConfig struct {
-	Domain        string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
-	VerifySenders bool   `yaml:"verify_senders" env:"MW_MAIL_VERIFY_SENDERS"`
+	Domain string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
 }
 
 type smtpConfig struct {
@@ -40,7 +39,7 @@ type smtpConfig struct {
 type webConfig struct {
 	ListenV4    string   `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
 	CorsOrigins []string `yaml:"cors_origins" env:"MW_WEB_CORS_ORIGINS"`
-	PublicUrl   string   `yaml:"public_url" default:"https://mailwhale.dev/" env:"MW_WEB_PUBLIC_URL"`
+	PublicUrl   string   `yaml:"public_url" default:"http://localhost:3000" env:"MW_WEB_PUBLIC_URL"`
 }
 
 type storeConfig struct {
@@ -48,8 +47,10 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper      string `env:"MW_SECURITY_PEPPER"`
-	AllowSignup bool   `env:"MW_SECURITY_ALLOW_SIGNUP" yaml:"allow_signup"`
+	Pepper        string `env:"MW_SECURITY_PEPPER"`
+	AllowSignup   bool   `yaml:"allow_signup" env:"MW_SECURITY_ALLOW_SIGNUP" default:"true"`
+	VerifySenders bool   `yaml:"verify_senders" default:"true" env:"MW_SECURITY_VERIFY_SENDERS"`
+	VerifyUsers   bool   `yaml:"verify_users" default:"true" env:"MW_SECURITY_VERIFY_USERS"`
 }
 
 type Config struct {
@@ -86,6 +87,13 @@ func Load() *Config {
 	if config.Web.ListenV4 == "" {
 		logbuch.Fatal("config option 'listen4' must be specified")
 	}
+
+	logbuch.Info("---")
+	logbuch.Info("This instance is assumed to be publicly accessible at: %v", config.Web.GetPublicUrl())
+	logbuch.Info("User registration enabled: %v", config.Security.AllowSignup)
+	logbuch.Info("Account activation required: %v", config.Security.VerifyUsers)
+	logbuch.Info("Sender address verification required: %v", config.Security.VerifySenders)
+	logbuch.Info("---")
 
 	Set(config)
 	return Get()

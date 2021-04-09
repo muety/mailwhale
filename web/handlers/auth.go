@@ -47,6 +47,11 @@ func (m *AuthMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if m.config.Security.VerifyUsers && !u.Verified {
+			util.RespondEmpty(w, r, http.StatusUnauthorized)
+			return
+		}
+
 		if !util.CompareBcrypt(u.Password, credentials, m.config.Security.Pepper) {
 			util.RespondEmpty(w, r, http.StatusUnauthorized)
 			return

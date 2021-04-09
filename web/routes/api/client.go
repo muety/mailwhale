@@ -86,7 +86,7 @@ func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if payload.Sender != "" && h.config.Mail.VerifySenders {
+	if payload.Sender != "" && h.config.Security.VerifySenders {
 		var user *types.User
 		if u := r.Context().Value(conf.KeyUser); u != nil {
 			user = u.(*types.User)
