@@ -8,7 +8,7 @@ import (
 type Template struct {
 	ID      string `json:"id"`
 	Name    string `json:"name"`
-	UserId  string `json:"-" boltholdIndex:"UserId"`
+	UserId  string `json:"user_id" boltholdIndex:"UserId"`
 	Content string `json:"content"`
 }
 

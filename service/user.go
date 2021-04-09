@@ -41,7 +41,7 @@ func (s *UserService) GetAll() (users []*types.User, err error) {
 func (s *UserService) GetById(id string) (*types.User, error) {
 	var user types.User
 	err := s.store.Get(id, &user)
-	return user.Sanitize(), err
+	return &user, err
 }
 
 func (s *UserService) Create(signup *dto.Signup) (*types.User, error) {
@@ -59,7 +59,7 @@ func (s *UserService) Create(signup *dto.Signup) (*types.User, error) {
 	if s.config.Security.VerifyUsers {
 		go s.verifyUser(user)
 	}
-	return user.Sanitize(), nil
+	return user, nil
 }
 
 func (s *UserService) Update(user *types.User, update *types.User) (*types.User, error) {
@@ -83,7 +83,7 @@ func (s *UserService) Update(user *types.User, update *types.User) (*types.User,
 	if err := s.store.Update(user.ID, user); err != nil {
 		return nil, err
 	}
-	return user.Sanitize(), nil
+	return user, nil
 }
 
 func (s *UserService) Delete(id string) error {

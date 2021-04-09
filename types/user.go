@@ -4,7 +4,7 @@ import "github.com/muety/mailwhale/util"
 
 type User struct {
 	ID       string          `json:"id" boltholdKey:"ID"`
-	Password string          `json:"-"`
+	Password string          `json:"password"` // clear before returning in a response !
 	Senders  []SenderAddress `json:"senders"`
 	Verified bool            `json:"verified"`
 }
@@ -26,6 +26,7 @@ func (u *User) Sanitize() *User {
 	if u.Senders == nil {
 		u.Senders = []SenderAddress{}
 	}
+	u.Password = ""
 	return u
 }
 

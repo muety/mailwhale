@@ -54,7 +54,7 @@ func (h *UserHandler) getMe(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusNotFound, errors.New("user not found"))
 		return
 	}
-	util.RespondJson(w, http.StatusOK, user)
+	util.RespondJson(w, http.StatusOK, user.Sanitize())
 }
 
 func (h *UserHandler) post(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func (h *UserHandler) post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logbuch.Info("created user '%s'", user.ID)
-	util.RespondJson(w, http.StatusCreated, user)
+	util.RespondJson(w, http.StatusCreated, user.Sanitize())
 }
 
 func (h *UserHandler) updateMe(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +106,7 @@ func (h *UserHandler) updateMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logbuch.Info("updated user '%s'", user.ID)
-	util.RespondJson(w, http.StatusOK, user)
+	util.RespondJson(w, http.StatusOK, user.Sanitize())
 }
 
 func (h *UserHandler) verify(w http.ResponseWriter, r *http.Request) {

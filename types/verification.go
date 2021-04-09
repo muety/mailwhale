@@ -8,10 +8,10 @@ const (
 )
 
 type Verification struct {
-	Token   string `boltholdKey:"Token"`
-	UserId  string
-	Scope   string
-	Subject string
+	Token   string `json:"token" boltholdKey:"Token"`
+	UserId  string `json:"user_id"`
+	Scope   string `json:"scope"`
+	Subject string `json:"subject"`
 }
 
 func NewVerification(user *User, scope, subject string) *Verification {

@@ -29,7 +29,7 @@ func AllPermissions() []string {
 type Client struct {
 	ID          string      `json:"id" boltholdKey:"ID"`
 	Description string      `json:"description"`
-	UserId      string      `json:"-" boltholdIndex:"UserId"`
+	UserId      string      `json:"user_id" boltholdIndex:"UserId"`
 	Permissions []string    `json:"permissions"`
 	Sender      MailAddress `json:"sender"`
 	ApiKey      *string     `json:"api_key"` // caution: usually you want to hide this!
