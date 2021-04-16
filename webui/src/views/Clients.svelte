@@ -1,18 +1,18 @@
 <script>
-  import { onMount } from 'svelte'
+  import {onMount} from 'svelte'
 
   import Layout from '../layouts/Main.svelte'
   import Navigation from '../components/Navigation.svelte'
   import Modal from '../components/Modal.svelte'
-  import { getClients, createClient, deleteClient } from '../api/clients'
-  import { getMe } from '../api/users'
-  import { user } from '../stores/auth'
+  import {createClient, deleteClient, getClients} from '../api/clients'
+  import {getMe} from '../api/users'
+  import ClientCard from '../components/ClientCard.svelte'
 
   const availablePermissions = [
     'send_mail',
     'manage_client',
     'manage_user',
-    'manage_template',
+    'manage_template'
   ]
 
   let me
@@ -24,6 +24,7 @@
     api_key: null,
     sender: null,
     permissions: null,
+    count_mails: 0
   }
 
   let newClientModal
@@ -39,7 +40,7 @@
         permissions: Object.entries(newClientPermissions)
           .filter((e) => e[1])
           .map((e) => e[0]),
-        sender: newClient.sender,
+        sender: newClient.sender
       })
       clients = [...clients, JSON.parse(JSON.stringify(newClient))]
     } finally {
@@ -47,16 +48,16 @@
     }
   }
 
-  async function _deleteClient(id) {
-    await deleteClient(id)
-    clients = clients.filter((c) => c.id !== id)
+  async function _deleteClient({ detail }) {
+    await deleteClient(detail.id)
+    clients = clients.filter((c) => c.id !== detail.id)
     reset()
   }
 
   function reset() {
     newClient = JSON.parse(JSON.stringify(emptyClient))
     newClientPermissions = availablePermissions.reduce(
-      (acc, val) => Object.assign(acc, { [val]: false }),
+      (acc, val) => Object.assign(acc, {[val]: false}),
       {}
     )
   }
@@ -67,28 +68,10 @@
   })
 </script>
 
-<style scoped>
-  .client-card {
-    @apply flex items-center justify-between w-full p-4 border border-gray-300 rounded-md shadow-sm;
-  }
-
-  .client-card .info {
-    @apply flex space-x-6 items-center;
-  }
-
-  .client-card .info .badges {
-    @apply flex space-x-2 mt-1;
-  }
-
-  .client-card .info .badges span {
-    @apply text-xs bg-primary text-white rounded px-1 font-semibold;
-  }
-</style>
-
 <Layout>
   <div slot="content" class="flex">
     <div class="w-1/4">
-      <Navigation />
+      <Navigation/>
     </div>
     <div class="flex flex-col w-3/4 w-full px-12">
       <div class="flex justify-between mb-8">
@@ -96,8 +79,9 @@
         <button
           class="flex items-center px-4 py-2 text-white rounded bg-primary hover:bg-primary-dark"
           on:click|stopPropagation={(e) => (newClientModal = true) && reset()}><span
-            class="material-icons">add</span>
-          Create</button>
+          class="material-icons">add</span>
+          Create
+        </button>
       </div>
 
       <p class="mb-8">
@@ -124,37 +108,9 @@
       {#if clients.length}
         <div class="flex flex-col space-y-4">
           {#each clients as client, i}
-            <div class="client-card">
-              <div class="info">
-                <span class="text-sm font-semibold">#{i + 1}</span>
-                <span
-                  class="p-1 font-mono text-sm bg-gray-100 rounded"
-                  title="Client ID">{client.id}</span>
-                <div class="flex flex-col">
-                  <span class="text-sm">{client.description}</span>
-                  {#if client.permissions}
-                    <div class="badges">
-                      {#each client.permissions as perm}
-                        <span>{perm}</span>
-                      {/each}
-                    </div>
-                  {/if}
-                  {#if client.sender}
-                    <div class="flex space-x-2">
-                      <div>
-                        <span class="text-xs font-semibold">Sender E-Mail:&nbsp;</span>
-                        <span class="text-xs">{client.sender}</span>
-                      </div>
-                    </div>
-                  {/if}
-                </div>
-              </div>
-              <div>
-                <a
-                  class="text-sm underline cursor-pointer text-primary hover:text-primary-dark"
-                  on:click={confirm('Are you sure?') && _deleteClient(client.id)}>Remove</a>
-              </div>
-            </div>
+            <ClientCard client="{client}" on:delete={_deleteClient}>
+              <span slot="index">{i+1}</span>
+            </ClientCard>
           {/each}
         </div>
       {:else}
@@ -177,10 +133,11 @@
               <input
                 type="text"
                 class="p-2 border-2 rounded-md border-primary"
+                id="desc-input"
                 name="desc-input"
                 placeholder="What will this new client key be used for?"
                 required
-                bind:value={newClient.description} />
+                bind:value={newClient.description}/>
             </div>
 
             <div>
@@ -189,8 +146,9 @@
                 <div class="flex items-center space-x-2">
                   <input
                     type="checkbox"
+                    id="perm-input-{perm}"
                     name="perm-input-{perm}"
-                    bind:checked={newClientPermissions[perm]} />
+                    bind:checked={newClientPermissions[perm]}/>
                   <label
                     for="perm-input-{perm}"
                     class="font-mono">{perm}</label>
@@ -223,6 +181,7 @@
                   class="text-sm font-semibold">Sender E-Mail:</label>
                 <select
                   class="border-2 border-primary rounded-md p-2 flex-grow cursor-pointer"
+                  id="default-sender-input"
                   bind:value={newClient.sender}>
                   <option selected value>Default</option>
                   {#each me.senders as sender}
@@ -236,10 +195,11 @@
             </div>
 
             <div class="flex justify-between py-2">
-              <div />
+              <div/>
               <button
                 type="submit"
-                class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark">Create</button>
+                class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark">Create
+              </button>
             </div>
           </form>
         </div>

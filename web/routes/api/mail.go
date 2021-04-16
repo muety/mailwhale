@@ -21,6 +21,7 @@ type MailHandler struct {
 	templateService *service.TemplateService
 	clientService   *service.ClientService
 	userService     *service.UserService
+	eventService    *service.ApplicationEventService
 }
 
 func NewMailHandler() *MailHandler {
@@ -30,6 +31,7 @@ func NewMailHandler() *MailHandler {
 		templateService: service.NewTemplateService(),
 		clientService:   service.NewClientService(),
 		userService:     service.NewUserService(),
+		eventService:    service.NewApplicationEventService(),
 	}
 }
 
@@ -89,6 +91,13 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusInternalServerError, err)
 		return
 	}
+
+	go h.eventService.Create(&types.ApplicationEvent{
+		Type:     types.MailSent,
+		UserId:   client.UserId,
+		ClientId: client.ID,
+		Payload:  (&types.MailSentPayload{}).FromMail(mail),
+	})
 
 	logbuch.Info("client '%s' (user '%s') sent mail of %d bytes from '%s' to %v", client.ID, client.UserId, len([]byte(mail.Body)), mail.From, mail.To)
 	util.RespondEmpty(w, r, 0)

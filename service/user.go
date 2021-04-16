@@ -10,6 +10,7 @@ import (
 	"github.com/muety/mailwhale/util"
 	"github.com/timshannon/bolthold"
 	"strings"
+	"time"
 )
 
 type UserService struct {
@@ -46,9 +47,10 @@ func (s *UserService) GetById(id string) (*types.User, error) {
 
 func (s *UserService) Create(signup *dto.Signup) (*types.User, error) {
 	user := &types.User{
-		ID:       signup.Email,
-		Password: util.HashBcrypt(signup.Password, s.config.Security.Pepper),
-		Senders:  []types.SenderAddress{},
+		ID:        signup.Email,
+		Password:  util.HashBcrypt(signup.Password, s.config.Security.Pepper),
+		Senders:   []types.SenderAddress{},
+		CreatedAt: time.Now(),
 	}
 	if !user.IsValid() {
 		return nil, errors.New("can't create user (empty password or invalid e-mail address)")

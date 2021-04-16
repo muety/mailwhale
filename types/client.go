@@ -8,6 +8,7 @@ import (
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/util"
 	"strings"
+	"time"
 )
 
 const (
@@ -33,6 +34,8 @@ type Client struct {
 	Permissions []string    `json:"permissions"`
 	Sender      MailAddress `json:"sender"`
 	ApiKey      *string     `json:"api_key"` // caution: usually you want to hide this!
+	CreatedAt   time.Time   `json:"created_at"`
+	CountMails  int         `json:"count_mails"` // not persisted
 }
 
 func (c *Client) HasPermission(permission string) bool {
@@ -59,6 +62,11 @@ func (c *Client) HasPermissionAnyOf(permissions []string) bool {
 func (c *Client) Sanitize() *Client {
 	c.ApiKey = nil
 	c.Sender = c.SenderOrDefault()
+	return c
+}
+
+func (c *Client) WithMailCount(count int) *Client {
+	c.CountMails = count
 	return c
 }
 

@@ -1,12 +1,16 @@
 package types
 
-import "github.com/muety/mailwhale/util"
+import (
+	"github.com/muety/mailwhale/util"
+	"time"
+)
 
 type User struct {
-	ID       string          `json:"id" boltholdKey:"ID"`
-	Password string          `json:"password"` // clear before returning in a response !
-	Senders  []SenderAddress `json:"senders"`
-	Verified bool            `json:"verified"`
+	ID        string          `json:"id" boltholdKey:"ID"`
+	Password  string          `json:"password"` // clear before returning in a response !
+	Senders   []SenderAddress `json:"senders"`
+	Verified  bool            `json:"verified"`
+	CreatedAt time.Time       `json:"created_at"`
 }
 
 func (u *User) IsValid() bool {
