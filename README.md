@@ -40,11 +40,14 @@ $ git clone https://github.com/muety/mailwhale.git
 $ cp config.default.yml config.yml
 $ vi config.yml
 
-# 3. Compile API and Web UI
+# 3. Compile Web UI
+$ cd webui/
 $ yarn && yarn build
+$ cd ..
+# 4. Compile API
 $ GO111MODULE=on go build
 
-# 4. Run it
+# 5. Run it
 $ ./mailwhale
 ```
 
