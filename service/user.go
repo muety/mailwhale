@@ -121,11 +121,11 @@ func (s *UserService) verifyUser(user *types.User) error {
 		user.ID,
 	))
 	if err != nil {
-		logbuch.Error("failed to create user verification token for '%s'", user.ID)
+		logbuch.Error("failed to create user verification token for '%s': %v", user.ID, err)
 		return err
 	}
 	if err := s.mailService.SendUserVerification(user, verification.Token); err != nil {
-		logbuch.Error("failed to send user verification to '%s'", user.ID)
+		logbuch.Error("failed to send user verification to '%s': %v", user.ID, err)
 		return err
 	} else {
 		logbuch.Info("sent user verification mail for '%s'", user.ID)
@@ -142,11 +142,11 @@ func (s *UserService) verifySenders(user *types.User, senders []types.SenderAddr
 			sender.String(),
 		))
 		if err != nil {
-			logbuch.Error("failed to create sender verification token for '%s'", sender.MailAddress.String())
+			logbuch.Error("failed to create sender verification token for '%s': %v", sender.MailAddress.String(), err)
 			return err
 		}
 		if err := s.mailService.SendSenderVerification(user, sender, verification.Token); err != nil {
-			logbuch.Error("failed to send sender verification to '%s'", sender.MailAddress.String())
+			logbuch.Error("failed to send sender verification to '%s': %v", sender.MailAddress.String(), err)
 			return err
 		} else {
 			logbuch.Info("sent sender verification mail for user '%s' to '%s'", user.ID, sender.String())
