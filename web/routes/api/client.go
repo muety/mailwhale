@@ -50,7 +50,7 @@ func (h *ClientHandler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, c := range clients {
-		c.Sanitize()
+		c.Sanitize(h.config.Mail.Domain)
 	}
 	util.RespondJson(w, http.StatusOK, clients)
 }
@@ -67,7 +67,7 @@ func (h *ClientHandler) getById(w http.ResponseWriter, r *http.Request) {
 		util.RespondError(w, r, http.StatusNotFound, err)
 		return
 	}
-	util.RespondJson(w, http.StatusOK, client.Sanitize())
+	util.RespondJson(w, http.StatusOK, client.Sanitize(h.config.Mail.Domain))
 }
 
 func (h *ClientHandler) post(w http.ResponseWriter, r *http.Request) {

@@ -54,7 +54,7 @@ func (s *MailService) SendUserVerification(user *types.User, token string) error
 	}
 
 	mail := &types.Mail{
-		From:    types.MailAddress(fmt.Sprintf("MailWhale System <system@%s>", s.config.Mail.Domain)),
+		From:    s.config.Mail.SystemSender(),
 		To:      []types.MailAddress{types.MailAddress(user.ID)},
 		Subject: "Verify your MailWhale account",
 	}
@@ -92,7 +92,7 @@ func (s *MailService) SendSenderVerification(user *types.User, sender types.Send
 	}
 
 	mail := &types.Mail{
-		From:    types.MailAddress(fmt.Sprintf("MailWhale System <system@%s>", s.config.Mail.Domain)),
+		From:    s.config.Mail.SystemSender(),
 		To:      []types.MailAddress{sender.MailAddress},
 		Subject: "Verify your e-mail address for MailWhale",
 	}

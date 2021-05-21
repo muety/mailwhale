@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/util"
 	"strings"
 	"time"
@@ -16,6 +15,7 @@ const (
 	PermissionManageClient   = "manage_client"
 	PermissionManageUser     = "manage_user"
 	PermissionManageTemplate = "manage_template"
+	ClientIdPrefixLength     = 8
 )
 
 func AllPermissions() []string {
@@ -59,9 +59,9 @@ func (c *Client) HasPermissionAnyOf(permissions []string) bool {
 	return false
 }
 
-func (c *Client) Sanitize() *Client {
+func (c *Client) Sanitize(baseDomain string) *Client {
 	c.ApiKey = nil
-	c.Sender = c.SenderOrDefault()
+	c.Sender = c.SenderOrDefault(baseDomain)
 	return c
 }
 
@@ -86,19 +86,19 @@ func (c *Client) Validate() error {
 	return nil
 }
 
-func (c *Client) SenderOrDefault() MailAddress {
+func (c *Client) SenderOrDefault(baseDomain string) MailAddress {
 	if c.Sender != "" {
 		return c.Sender
 	}
-	return c.DefaultSender()
+	return c.DefaultSender(baseDomain)
 }
 
-func (c *Client) DefaultSender() MailAddress {
+func (c *Client) DefaultSender(baseDomain string) MailAddress {
 	return MailAddress(
 		fmt.Sprintf(
 			"user+%s@%s",
-			strings.ToLower(c.ID[0:conf.ClientIdPrefixLength]),
-			conf.Get().Mail.Domain,
+			strings.ToLower(c.ID[0:ClientIdPrefixLength]),
+			baseDomain,
 		),
 	)
 }
@@ -111,8 +111,8 @@ func NewClientIdFrom(base string) string {
 
 }
 
-func NewClientApiKey() (key, hash string) {
+func NewClientApiKey(pepper string) (key, hash string) {
 	key = uuid.New().String()
-	hash = util.HashBcrypt(key, conf.Get().Security.Pepper)
+	hash = util.HashBcrypt(key, pepper)
 	return key, hash
 }

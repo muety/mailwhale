@@ -53,7 +53,7 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	client := r.Context().Value(conf.KeyClient).(*types.Client)
 
 	mail := &types.Mail{
-		From:    client.SenderOrDefault(),
+		From:    client.SenderOrDefault(h.config.Mail.Domain),
 		To:      payload.To,
 		Subject: payload.Subject,
 	}

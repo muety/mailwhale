@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/emvi/logbuch"
 	"github.com/jinzhu/configor"
+	"github.com/muety/mailwhale/types"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -15,17 +16,14 @@ const (
 	KeyClient = "client"
 )
 
-const (
-	ClientIdPrefixLength = 8
-)
-
 type EmailPasswordTuple struct {
 	Email    string
 	Password string
 }
 
 type mailConfig struct {
-	Domain string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
+	Domain          string `yaml:"domain" env:"MW_MAIL_DOMAIN"`
+	SystemSenderTpl string `yaml:"system_sender" env:"MW_MAIL_SYSTEM_SENDER" default:"MailWhale System <system@{0}>"`
 }
 
 type smtpConfig struct {
@@ -87,6 +85,9 @@ func Load() *Config {
 	if config.Web.ListenV4 == "" {
 		logbuch.Fatal("config option 'listen4' must be specified")
 	}
+	if !config.Mail.SystemSender().Valid() {
+		logbuch.Fatal("system sender address is invalid")
+	}
 
 	logbuch.Info("---")
 	logbuch.Info("This instance is assumed to be publicly accessible at: %v", config.Web.GetPublicUrl())
@@ -105,6 +106,10 @@ func (c *webConfig) GetPublicUrl() string {
 
 func (c *smtpConfig) ConnStr() string {
 	return fmt.Sprintf("%s:%d", c.Host, c.Port)
+}
+
+func (c *mailConfig) SystemSender() types.MailAddress {
+	return types.MailAddress(strings.Replace(c.SystemSenderTpl, "{0}", c.Domain, -1))
 }
 
 func (c *Config) IsDev() bool {

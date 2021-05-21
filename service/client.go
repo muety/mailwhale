@@ -61,7 +61,7 @@ func (s *ClientService) preprocess(client *types.Client) (*types.Client, *types.
 	client.ID = types.NewClientId()
 	client.CreatedAt = time.Now()
 	client.CountMails = 0
-	apiKey, hash := types.NewClientApiKey()
+	apiKey, hash := types.NewClientApiKey(s.config.Security.Pepper)
 	client.ApiKey = &hash
 
 	if client.Permissions == nil {
