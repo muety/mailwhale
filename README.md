@@ -13,10 +13,11 @@
 
 ## 📄 Description
 
-Being a web developer, chances are high that at some point you need to teach your application how to send mails.
-Essentially, there are two options. Either you use a **professional mail sending service**
-like [Mailgun](https://mailgun.com), [SendGrid](https://sendgrid.com), [SMTPeter](https://smtpeter.com) and the like or
+As a developer, chances are high that at some point you need to teach your application how to send mails.
+Essentially, there are two options. Either you use a **professional mail sending service** or
 you **include an SMTP client library** to your software and **plug your own mail server**.
+
+Think of MailWhale like [Mailgun](https://mailgun.com), [SendGrid](https://sendgrid.com) or [SMTPeter](https://smtpeter.com), but open source and self-hosted. Or like [Postal](https://github.com/postalhq/postal) or [Cuttlefish](https://cuttlefish.io/), but less bloated and without running its own, internal SMTP server. 
 
 However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity, 
 but still use your own infrastructure – you may want to go with ✉️🐳.
