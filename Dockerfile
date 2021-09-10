@@ -8,7 +8,8 @@ RUN CGO_ENABLED=0 go build -o mailwhale
 
 WORKDIR /app
 RUN cp /src/mailwhale . && \
-    cp /src/version.txt .
+    cp /src/version.txt . && \
+    cp -r /src/templates .
 
 FROM node:14 AS ui-build-env
 
@@ -26,14 +27,14 @@ FROM alpine
 WORKDIR /app
 
 ENV MW_ENV=prod
-ENV MW_SMTP_HOST=
-ENV MW_SMTP_PORT=
-ENV MW_SMTP_USER=
-ENV MW_SMTP_PASS=
+ENV MW_SMTP_HOST=''
+ENV MW_SMTP_PORT=''
+ENV MW_SMTP_USER=''
+ENV MW_SMTP_PASS=''
 ENV MW_SMTP_TLS=false
 ENV MW_WEB_LISTEN_V4=0.0.0.0:3000
-ENV MW_WEB_PUBLIC_URK=http://localhost:3000
-ENV MW_SECURITY_PEPPER=
+ENV MW_WEB_PUBLIC_URL=http://localhost:3000
+ENV MW_SECURITY_PEPPER=''
 ENV MW_SECURITY_ALLOW_SIGNUP=true
 ENV MW_SECURITY_VERIFY_USERS=true
 ENV MW_SECURITY_VERIFY_SENDERS=true
