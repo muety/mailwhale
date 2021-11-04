@@ -35,7 +35,8 @@ type smtpConfig struct {
 }
 
 type webConfig struct {
-	ListenV4    string   `yaml:"listen_v4" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_V4"`
+	ListenV4    string   `yaml:"listen_v4" env:"MW_WEB_LISTEN_V4"` // deprecated, use ListenAddr
+	ListenAddr  string   `yaml:"listen_addr" default:"127.0.0.1:3000" env:"MW_WEB_LISTEN_ADDR"`
 	CorsOrigins []string `yaml:"cors_origins" env:"MW_WEB_CORS_ORIGINS"`
 	PublicUrl   string   `yaml:"public_url" default:"http://localhost:3000" env:"MW_WEB_PUBLIC_URL"`
 }
@@ -82,9 +83,14 @@ func Load() *Config {
 
 	config.Version = readVersion()
 
-	if config.Web.ListenV4 == "" {
-		logbuch.Fatal("config option 'listen4' must be specified")
+	if config.Web.ListenV4 != "" {
+		config.Web.ListenAddr = config.Web.ListenV4 // for backwards-compatbility
 	}
+
+	if config.Web.ListenAddr == "" {
+		logbuch.Fatal("config option 'listen_addr' must be specified")
+	}
+
 	if !config.Mail.SystemSender().Valid() {
 		logbuch.Fatal("system sender address is invalid")
 	}

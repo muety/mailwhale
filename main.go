@@ -81,13 +81,13 @@ func listen(handler http.Handler, config *conf.Config) {
 
 	s4 = &http.Server{
 		Handler:      handler,
-		Addr:         config.Web.ListenV4,
+		Addr:         config.Web.ListenAddr,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 
 	go func() {
-		logbuch.Info("web server started, listening on %s", config.Web.ListenV4)
+		logbuch.Info("web server started, listening on %s", config.Web.ListenAddr)
 		if err := s4.ListenAndServe(); err != nil {
 			logbuch.Fatal("failed to start web server: %v", err)
 		}

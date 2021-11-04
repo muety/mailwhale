@@ -165,7 +165,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 |---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
 | `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
 | `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
-| `web.listen_v4`                 | `MW_WEB_LISTEN_V4`  | `127.0.0.1:3000`  | IP and port for the web server to listen on |
+| `web.listen_addr`               | `MW_WEB_LISTEN_ADDR`| `127.0.0.1:3000`  | IP and port for the web server to listen on (can be IPv4 or IPv6) |
 | `web.cors_origin`               | -                   | [`http://localhost:5000`] | List of URLs which to accept CORS requests for |
 | `web.public_url`                | `MW_PUBLIC_URL`     | `http://localhost:3000` | The URL under which your MailWhale server is available from the public internet |
 | `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
