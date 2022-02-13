@@ -31,6 +31,8 @@ Stay tuned, there is a lot more to come.
 ## 🚧 Project State
 The project is in a very early stage and breaking changes are likely to happen. We'd recommend to not yet use this in production or at least expect non-trivial effort required to upgrade to a new version.
 
+For a more stable and robust alternative to MailWhale, check out [postalsys/emailengine](https://github.com/postalsys/emailengine).
+
 ## 📦 Installation
 ### Compile from source
 ```bash
