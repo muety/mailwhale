@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        cp config.default.yml config.yml
+        docker build --tag mailwhale:latest .
+        docker images
