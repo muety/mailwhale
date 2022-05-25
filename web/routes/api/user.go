@@ -71,7 +71,7 @@ func (h *UserHandler) post(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.userService.Create(&payload)
 	if err != nil {
-		util.RespondError(w, r, http.StatusBadRequest, err)
+		util.RespondErrorMessage(w, r, http.StatusConflict, errors.New("user already existing"))
 		return
 	}
 

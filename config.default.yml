@@ -16,6 +16,7 @@ smtp:
   username: 'you@example.org'
   password: 'your secret password'
   tls: true                           # Whether to connect via SSL/TLS (set 'false' for STARTTLS)
+  skip_verify_tls: false              # Whether to trust self-signed certificates
 
 store:
   path: 'data.json.db'

@@ -27,11 +27,12 @@ type mailConfig struct {
 }
 
 type smtpConfig struct {
-	Host     string `env:"MW_SMTP_HOST"`
-	Port     uint   `env:"MW_SMTP_PORT"`
-	Username string `env:"MW_SMTP_USER"`
-	Password string `env:"MW_SMTP_PASS"`
-	TLS      bool   `env:"MW_SMTP_TLS"`
+	Host          string `env:"MW_SMTP_HOST"`
+	Port          uint   `env:"MW_SMTP_PORT"`
+	Username      string `env:"MW_SMTP_USER"`
+	Password      string `env:"MW_SMTP_PASS"`
+	TLS           bool   `env:"MW_SMTP_TLS"`
+	SkipVerifyTLS bool   `yaml:"skip_verify_tls" env:"MW_SMTP_SKIP_VERIFY_TLS"`
 }
 
 type webConfig struct {

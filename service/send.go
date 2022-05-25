@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crypto/tls"
 	"errors"
 	"github.com/emersion/go-sasl"
 	"github.com/emersion/go-smtp"
@@ -30,6 +31,9 @@ func (s *SendService) Send(mail *types.Mail) error {
 	return sendMail(
 		s.config.Smtp.ConnStr(),
 		s.config.Smtp.TLS,
+		&tls.Config{
+			InsecureSkipVerify: s.config.Smtp.SkipVerifyTLS,
+		},
 		s.auth,
 		mail.From.Raw(),
 		mail.To.RawStrings(),
@@ -37,11 +41,11 @@ func (s *SendService) Send(mail *types.Mail) error {
 	)
 }
 
-func sendMail(addr string, tls bool, a sasl.Client, from string, to []string, r io.Reader) error {
+func sendMail(addr string, useTls bool, tlsConf *tls.Config, a sasl.Client, from string, to []string, r io.Reader) error {
 	dial := smtp.Dial
-	if tls {
+	if useTls {
 		dial = func(addr string) (*smtp.Client, error) {
-			return smtp.DialTLS(addr, nil)
+			return smtp.DialTLS(addr, tlsConf)
 		}
 	}
 
@@ -53,7 +57,7 @@ func sendMail(addr string, tls bool, a sasl.Client, from string, to []string, r 
 	defer c.Close()
 
 	if ok, _ := c.Extension("STARTTLS"); ok {
-		if err = c.StartTLS(nil); err != nil {
+		if err = c.StartTLS(tlsConf); err != nil {
 			return err
 		}
 	}

@@ -163,23 +163,24 @@ $ curl -XPOST \
 ## 🔧 Configuration Options
 You can specify configuration options either via a config file (`config.yml`) or via environment variables. Here is an overview of all options.
 
-| YAML Key                  | Environment Variable      | Default      | Description                                                         |
-|---------------------------|---------------------------|--------------|---------------------------------------------------------------------|
-| `env`                           | `MW_ENV`            | `dev`             | Whether to use development- or production settings |
-| `mail.domain`                   | `MW_MAIL_DOMAIN`    | -                 | Default domain for sending mails |
-| `web.listen_addr`               | `MW_WEB_LISTEN_ADDR`| `127.0.0.1:3000`  | IP and port for the web server to listen on (can be IPv4 or IPv6) |
-| `web.cors_origin`               | -                   | [`http://localhost:5000`] | List of URLs which to accept CORS requests for |
-| `web.public_url`                | `MW_PUBLIC_URL`     | `http://localhost:3000` | The URL under which your MailWhale server is available from the public internet |
-| `smtp.host`                     | `MW_SMTP_HOST`      | -                 | SMTP relay host name or IP |
-| `smtp.port`                     | `MW_SMTP_PORT`      | -                 | SMTP relay port |
-| `smtp.username`                 | `MW_SMTP_USER`      | -                 | SMTP relay authentication user name |
-| `smtp.password`                 | `MW_SMTP_PASS`      | -                 | SMTP relay authentication password |
-| `smtp.tls`                      | `MW_SMTP_TLS`       | `false`           | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay |
-| `store.path`                    | `MW_STORE_PATH`     | `./data.json.db`   | Target location of the database file |
-| `security.pepper`               | `MW_SECURITY_PEPPER`| -                 | Pepper to use for hashing user passwords |
-| `security.allow_signup`         | `MW_SECURITY_ALLOW_SIGNUP` | `true`    | Whether to allow the registration of new users |
-| `security.verify_users`         | `MW_SECURITY_VERIFY_USERS` | `true`    | Whether to require new users to activate their account using a confirmation mail |
-| `security.verify_senders`       | `MW_SECURITY_VERIFY_SENDERS` | `true`  | Whether to validate sender addresses and their domains' SPF records |
+| YAML Key                  | Environment Variable         | Default                   | Description                                                                       |
+|---------------------------|------------------------------|---------------------------|-----------------------------------------------------------------------------------|
+| `env`                     | `MW_ENV`                     | `dev`                     | Whether to use development- or production settings                                |
+| `mail.domain`             | `MW_MAIL_DOMAIN`             | -                         | Default domain for sending mails                                                  |
+| `web.listen_addr`         | `MW_WEB_LISTEN_ADDR`         | `127.0.0.1:3000`          | IP and port for the web server to listen on (can be IPv4 or IPv6)                 |
+| `web.cors_origin`         | -                            | [`http://localhost:5000`] | List of URLs which to accept CORS requests for                                    |
+| `web.public_url`          | `MW_PUBLIC_URL`              | `http://localhost:3000`   | The URL under which your MailWhale server is available from the public internet   |
+| `smtp.host`               | `MW_SMTP_HOST`               | -                         | SMTP relay host name or IP                                                        |
+| `smtp.port`               | `MW_SMTP_PORT`               | -                         | SMTP relay port                                                                   |
+| `smtp.username`           | `MW_SMTP_USER`               | -                         | SMTP relay authentication user name                                               |
+| `smtp.password`           | `MW_SMTP_PASS`               | -                         | SMTP relay authentication password                                                |
+| `smtp.tls`                | `MW_SMTP_TLS`                | `false`                   | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay |
+| `smtp.skip_verify_tls`    | `MW_SMTP_SKIP_VERIFY_TLS`    | `false`                   | Whether to skip certificate verification (e.g. trust self-signed certs)           |
+| `store.path`              | `MW_STORE_PATH`              | `./data.json.db`          | Target location of the database file                                              |
+| `security.pepper`         | `MW_SECURITY_PEPPER`         | -                         | Pepper to use for hashing user passwords                                          |
+| `security.allow_signup`   | `MW_SECURITY_ALLOW_SIGNUP`   | `true`                    | Whether to allow the registration of new users                                    |
+| `security.verify_users`   | `MW_SECURITY_VERIFY_USERS`   | `true`                    | Whether to require new users to activate their account using a confirmation mail  |
+| `security.verify_senders` | `MW_SECURITY_VERIFY_SENDERS` | `true`                    | Whether to validate sender addresses and their domains' SPF records               |
 
 ### Sender verification & SPF Check
 By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `user+abcdefgh@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
