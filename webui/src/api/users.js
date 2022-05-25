@@ -4,8 +4,8 @@ async function createUser(signup) {
     return (await request('/user', signup, { method: 'POST' })).data
 }
 
-async function getMe() {
-    return (await request('/user/me', null, {})).data
+async function getMe(opts) {
+    return (await request('/user/me', null, opts || {})).data
 }
 
 async function updateMe(data) {

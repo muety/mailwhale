@@ -14,11 +14,6 @@
   let page
 
   user.load()
-  user.subscribe((user) => {
-    if (!user) {
-      page = Home
-    }
-  })
 
   router('/', () => {
     if (!!user.getToken()) {

@@ -22,7 +22,9 @@ async function request(path, data, options) {
 
     if (response.status === 401) {
         user.logout()
-        window.location.replace('/')
+        if (!options.skipRedirect) {
+            window.location.replace('/')
+        }
     }
 
     if (response.status >= 400) {

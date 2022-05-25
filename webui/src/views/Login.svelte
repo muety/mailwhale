@@ -4,9 +4,11 @@
 
   import { user } from '../stores/auth'
 
-  function login({ detail }) {
-    user.login(detail)
-    window.location.replace('clients')
+  async function login({ detail }) {
+    try {
+        await user.login(detail)
+        window.location.replace('clients')
+    } catch (e) {}
   }
 </script>
 
