@@ -1,8 +1,8 @@
 env: dev                              # Affects log level and a few other things
 
 mail:
-  domain: mailwhale.dev                                   # Your server's domain name
-  system_sender: MailWhale System <system@mailwhale.dev>  # Address which to send user verifications, etc. from
+  domain: example.org                                     # Your server's domain name
+  system_sender: MailWhale System <system@example.org>  # Address which to send user verifications, etc. from
 
 web:
   public_url: 'http://localhost:3000' # Publicly available URL of your instance, required for callback links via e-mail
