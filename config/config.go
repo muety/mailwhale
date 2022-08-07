@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/emvi/logbuch"
@@ -8,6 +9,7 @@ import (
 	"github.com/muety/mailwhale/types"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -47,11 +49,15 @@ type storeConfig struct {
 }
 
 type securityConfig struct {
-	Pepper        string `env:"MW_SECURITY_PEPPER"`
-	AllowSignup   bool   `yaml:"allow_signup" env:"MW_SECURITY_ALLOW_SIGNUP" default:"true"`
-	VerifySenders bool   `yaml:"verify_senders" default:"true" env:"MW_SECURITY_VERIFY_SENDERS"`
-	VerifyUsers   bool   `yaml:"verify_users" default:"true" env:"MW_SECURITY_VERIFY_USERS"`
+	Pepper          string   `env:"MW_SECURITY_PEPPER"`
+	AllowSignup     bool     `yaml:"allow_signup" env:"MW_SECURITY_ALLOW_SIGNUP" default:"true"`
+	VerifySenders   bool     `yaml:"verify_senders" default:"true" env:"MW_SECURITY_VERIFY_SENDERS"`
+	VerifyUsers     bool     `yaml:"verify_users" default:"true" env:"MW_SECURITY_VERIFY_USERS"`
+	BlockList       []string `yaml:"block_list" env:"MW_SECURITY_BLOCK_LIST"`
+	blockListParsed BlockList
 }
+
+type BlockList []*regexp.Regexp
 
 type Config struct {
 	Env      string `default:"dev" env:"MW_ENV"`
@@ -101,6 +107,7 @@ func Load() *Config {
 	logbuch.Info("User registration enabled: %v", config.Security.AllowSignup)
 	logbuch.Info("Account activation required: %v", config.Security.VerifyUsers)
 	logbuch.Info("Sender address verification required: %v", config.Security.VerifySenders)
+	logbuch.Info("Blocked recipient patterns: %d", len(config.Security.BlockListPatterns()))
 	logbuch.Info("---")
 
 	Set(config)
@@ -119,8 +126,39 @@ func (c *mailConfig) SystemSender() types.MailAddress {
 	return types.MailAddress(strings.Replace(c.SystemSenderTpl, "{0}", c.Domain, -1))
 }
 
+func (c *securityConfig) BlockListPatterns() BlockList {
+	if len(c.BlockList) != len(c.blockListParsed) {
+		for _, r := range c.BlockList {
+			if p, err := regexp.Compile(r); err == nil {
+				c.blockListParsed = append(c.blockListParsed, p)
+			} else {
+				logbuch.Error("failed to parse block list pattern '%s': %v", err)
+			}
+		}
+	}
+	return c.blockListParsed
+}
+
 func (c *Config) IsDev() bool {
 	return c.Env == "dev" || c.Env == "development"
+}
+
+func (l BlockList) Check(email string) error {
+	for _, p := range l {
+		if p.MatchString(email) {
+			return errors.New(fmt.Sprintf("recipient '%s' blocked by the server", email))
+		}
+	}
+	return nil
+}
+
+func (l BlockList) CheckBatch(emails []string) error {
+	for _, e := range emails {
+		if err := l.Check(e); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func readVersion() string {

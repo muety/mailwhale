@@ -11,6 +11,7 @@ import (
 	"github.com/muety/mailwhale/util"
 	"github.com/muety/mailwhale/web/handlers"
 	"net/http"
+	"strings"
 )
 
 const routeMail = "/api/mail"
@@ -88,7 +89,11 @@ func (h *MailHandler) post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.sendService.Send(mail); err != nil {
-		util.RespondError(w, r, http.StatusInternalServerError, err)
+		status := http.StatusInternalServerError
+		if strings.Contains(err.Error(), "blocked") {
+			status = http.StatusBadRequest
+		}
+		util.RespondError(w, r, status, err)
 		return
 	}
 

@@ -26,3 +26,6 @@ security:
   allow_signup: true
   verify_users: true                  # Whether to send verification mail when registering a new user
   verify_senders: true                # Whether to send verification mail when adding new sender addresses
+  block_list:                         # List of regexes to validate e-mail recipients against
+    - 'evilcompany\.org'
+    - 'drevil@gmail\.com'

@@ -28,6 +28,12 @@ func NewSendService() *SendService {
 }
 
 func (s *SendService) Send(mail *types.Mail) error {
+	recipients := mail.To.RawStrings()
+
+	if err := s.config.Security.BlockListPatterns().CheckBatch(recipients); err != nil {
+		return err
+	}
+
 	return sendMail(
 		s.config.Smtp.ConnStr(),
 		s.config.Smtp.TLS,
@@ -36,7 +42,7 @@ func (s *SendService) Send(mail *types.Mail) error {
 		},
 		s.auth,
 		mail.From.Raw(),
-		mail.To.RawStrings(),
+		recipients,
 		mail.Reader(),
 	)
 }
