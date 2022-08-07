@@ -12,13 +12,13 @@ require (
 	github.com/jinzhu/configor v1.2.1
 	github.com/rs/cors v1.8.2
 	github.com/timshannon/bolthold v0.0.0-20210913165410-232392fc8a6a
-	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 )
 
 require (
-	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
