@@ -62,7 +62,7 @@ export default {
 		// the bundle has been generated
 		!production && dev({
 			dirs: ['public'],
-			proxy: { '/api/*': 'http://localhost:3000/' },
+			proxy: [{ from: '/api/*', to: 'http://localhost:3000/' }],
 			port: 5000,
 			spa: 'public/index.html'
 		}),

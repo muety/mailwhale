@@ -2,7 +2,7 @@ import { user } from '../stores/auth'
 import { errors } from '../stores/alerts'
 
 function apiUrl() {
-    return process.env.apiUrl || '/api'
+    return process?.env?.apiUrl || '/api'
 }
 
 function baseHeaders() {
