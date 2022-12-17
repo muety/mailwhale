@@ -14,9 +14,9 @@
   {#if currentUser}
     <span class="flex items-center text-sm"><span class="mr-1 material-icons">person</span> {currentUser}</span>
     <span>|</span>
-    <a
+    <span
       class="text-sm cursor-pointer text-primary hover:text-primary-dark"
-      on:click={logout}>Logout</a>
+      on:click={logout}>Logout</span>
   {:else}
     <a
       href="/signup"

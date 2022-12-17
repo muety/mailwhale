@@ -33,12 +33,21 @@ export default {
           ],
         },
       }),
+      onwarn: (warning, defaultHandler) => {
+        if (warning.code === 'a11y-distracting-elements') return;
+        if (warning.code === 'a11y-click-events-have-key-events') return;
+        if (warning.code === 'css-unused-selector') return;
+
+        // handle all other warnings normally
+        defaultHandler(warning);
+      },
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
     css({ output: 'bundle.css' }),
 
     replace({
+      preventAssignment: true,
       process: JSON.stringify({
         env: {
           isDev: !production,
@@ -62,7 +71,7 @@ export default {
     // the bundle has been generated
     !production && dev({
       dirs: ['public'],
-      proxy: [{ from: '/api/*', to: 'http://localhost:3000/' }],
+      proxy: [{ from: '/api/*', to: 'http://127.0.0.1:3000/' }],
       port: 5000,
       spa: 'public/index.html'
     }),

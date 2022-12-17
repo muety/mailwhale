@@ -102,11 +102,13 @@
         <a
           href="https://blog.mailtrap.io/spf-records-explained/"
           target="_blank"
+          rel="noreferrer"
           class="text-primary">SPF</a>
         and
         <a
           href="https://blog.mailtrap.io/dkim/"
           target="_blank"
+          rel="noreferrer"
           class="text-primary">DKIM</a>
         records for your domain, which permit MailWhale to send mail on your
         behalf. SPF and DKIM are security measures in the context of e-mail that
@@ -123,6 +125,7 @@
         <a
           href="https://github.com/muety/mailwhale#spf-check"
           target="_blank"
+          rel="noreferrer"
           class="text-primary">this README section</a>
         on GitHub.
         <strong>DKIM</strong>
@@ -130,7 +133,7 @@
       </p>
       <br>
       <p>
-        Chances are, depending on the recipient's mail provider, that you will also have to set proper <strong><a href="https://blog.mailtrap.io/dmarc-explained/" target="_blank">DMARC</a></strong> records in order for your mails to not be considered spam.
+        Chances are, depending on the recipient's mail provider, that you will also have to set proper <strong><a href="https://blog.mailtrap.io/dmarc-explained/" target="_blank" rel="noreferrer">DMARC</a></strong> records in order for your mails to not be considered spam.
       </p>
 
       <h2 class="mt-8 mb-4 text-lg font-semibold">Your Addresses</h2>
@@ -148,9 +151,9 @@
                 </div>
               </div>
               <div>
-                <a
+                <span
                   class="text-sm underline cursor-pointer text-primary hover:text-primary-dark"
-                  on:click={confirm('Are you sure?') && _deleteAddress(sender)}>Remove</a>
+                  on:click={confirm('Are you sure?') && _deleteAddress(sender)}>Remove</span>
               </div>
             </div>
           {/each}

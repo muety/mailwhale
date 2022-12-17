@@ -63,6 +63,7 @@
       <a
         href="https://github.com/muety/mailwhale"
         target="_blank"
+        rel="noreferrer"
         class="text-primary hover:text-primary-dark">GitHub</a>
     </div>
     <div class="flex space-x-4">

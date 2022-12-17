@@ -61,8 +61,8 @@
   </div>
   <div class="flex space-x-4 actions">
     <div class="badges"><span title="{client.count_mails} mails sent">{client.count_mails}</span></div>
-    <a
+    <span
       class="text-sm underline cursor-pointer text-primary hover:text-primary-dark"
-      on:click={confirm('Are you sure?') && deleteClient(client.id)}>Remove</a>
+      on:click={confirm('Are you sure?') && deleteClient(client.id)}>Remove</span>
   </div>
 </div>

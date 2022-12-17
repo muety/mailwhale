@@ -141,7 +141,7 @@
         will usually consist of styled HTML, but can also be plain text. They
         can contain placeholder variables, which are then filled from a JSON
         object when requesting to send a mail using the respective template.<br><br>
-        When sending a mail, reference your template using <span class="font-mono text-sm">template_id</span> and <span class="font-mono text-sm">template_vars</span>. A basic, responsive <a href="https://github.com/leemunroe/responsive-html-email-template" target="_blank" class="text-primary">default template</a> is included and can be loaded as a starter.
+        When sending a mail, reference your template using <span class="font-mono text-sm">template_id</span> and <span class="font-mono text-sm">template_vars</span>. A basic, responsive <a href="https://github.com/leemunroe/responsive-html-email-template" target="_blank" rel="noreferrer" class="text-primary">default template</a> is included and can be loaded as a starter.
       </p>
 
       {#if templates.length}
