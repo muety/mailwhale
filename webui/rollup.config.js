@@ -73,7 +73,7 @@ export default {
       dirs: ['public'],
       proxy: [{ from: '/api/*', to: 'http://127.0.0.1:3000/' }],
       port: 5000,
-      spa: 'public/index.html'
+      spa: true
     }),
 
     // Watch the `public` directory and refresh the
