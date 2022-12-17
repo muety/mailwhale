@@ -1,11 +1,11 @@
 <script>
-  import {onMount} from 'svelte'
+  import { onMount } from 'svelte'
 
   import Layout from '../layouts/Main.svelte'
   import Navigation from '../components/Navigation.svelte'
   import Modal from '../components/Modal.svelte'
-  import {createClient, deleteClient, getClients} from '../api/clients'
-  import {getMe} from '../api/users'
+  import { createClient, deleteClient, getClients } from '../api/clients'
+  import { getMe } from '../api/users'
   import ClientCard from '../components/ClientCard.svelte'
 
   const availablePermissions = [
@@ -57,7 +57,7 @@
   function reset() {
     newClient = JSON.parse(JSON.stringify(emptyClient))
     newClientPermissions = availablePermissions.reduce(
-      (acc, val) => Object.assign(acc, {[val]: false}),
+      (acc, val) => Object.assign(acc, { [val]: false }),
       {}
     )
   }
@@ -109,7 +109,7 @@
         <div class="flex flex-col space-y-4">
           {#each clients as client, i}
             <ClientCard client="{client}" on:delete={_deleteClient}>
-              <span slot="index">{i+1}</span>
+              <span slot="index">{i + 1}</span>
             </ClientCard>
           {/each}
         </div>

@@ -16,7 +16,7 @@
   <div slot="content" class="flex flex-col items-center justify-center">
     <h1 class="text-2xl font-semibold">Sign Up</h1>
     <div class="w-1/2 py-8 lg:w-1/3">
-      <SignupForm on:signup={signup} />
+      <SignupForm on:signup={signup}/>
     </div>
   </div>
 </Layout>

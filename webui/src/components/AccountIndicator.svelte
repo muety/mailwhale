@@ -18,11 +18,11 @@
       class="text-sm cursor-pointer text-primary hover:text-primary-dark"
       on:click={logout}>Logout</a>
   {:else}
-  <a
-    href="/signup"
-    class="font-semibold text-primary hover:text-primary-dark">Sign Up</a>  
-  <span>&nbsp;|&nbsp;</span>
-  <a
+    <a
+      href="/signup"
+      class="font-semibold text-primary hover:text-primary-dark">Sign Up</a>
+    <span>&nbsp;|&nbsp;</span>
+    <a
       href="/login"
       class="font-semibold text-primary hover:text-primary-dark">Login</a>
   {/if}

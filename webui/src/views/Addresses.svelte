@@ -62,7 +62,7 @@
 <Layout>
   <div slot="content" class="flex">
     <div class="w-1/4">
-      <Navigation />
+      <Navigation/>
     </div>
     <div class="max-w-screen-lg">
       <div class="flex justify-between mb-8">
@@ -70,8 +70,9 @@
         <button
           class="flex items-center px-4 py-2 text-white rounded bg-primary hover:bg-primary-dark"
           on:click|stopPropagation={(e) => (newAddressModal = true) && reset()}><span
-            class="material-icons">add</span>
-          Add</button>
+          class="material-icons">add</span>
+          Add
+        </button>
       </div>
       <p>
         By default, mails are sent from a pseudo-randomly generated default
@@ -81,7 +82,7 @@
         domain that you own. However, there are a few conditions to be met to do
         so.
       </p>
-      <br />
+      <br/>
       <p>
         First, you have to
         <strong>verify</strong>
@@ -89,7 +90,7 @@
         confirmation mail is sent to that address. Only after successful
         verification it can be used to send mail.
       </p>
-      <br />
+      <br/>
       <p>
         Second, you have to set proper
         <a
@@ -108,7 +109,7 @@
         need to provide certain SPF- and DKIM DNS records for that domain, which
         will subsequently be verified by the recipient mail server.
       </p>
-      <br />
+      <br/>
       <p>
         For
         <strong>SPF</strong>
@@ -173,15 +174,16 @@
                 name="mail-input"
                 placeholder="E.g. My App Admin <admin@example.org>"
                 required
-                bind:value={newAddress} />
+                bind:value={newAddress}/>
             </div>
 
             <div class="flex justify-between py-2">
-              <div />
+              <div/>
               <button
                 type="submit"
                 class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark">Add
-                & Verify</button>
+                & Verify
+              </button>
             </div>
           </form>
         </div>

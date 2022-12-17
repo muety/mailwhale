@@ -69,18 +69,20 @@
   onMount(() => {
     getTemplates()
       .then((result) => (templates = result))
-      .catch(() => {})
+      .catch(() => {
+      })
 
     getClients()
       .then((result) => (clients = result.filter(c => c.permissions.includes('send_mail'))))
-      .catch(() => {})
+      .catch(() => {
+      })
   })
 </script>
 
 <Layout>
   <div slot="content" class="flex">
     <div class="w-1/4">
-      <Navigation />
+      <Navigation/>
     </div>
     <div class="flex flex-col px-12 w-full w-3/4">
       <div class="flex justify-between mb-8">
@@ -98,7 +100,7 @@
             name="to-input"
             placeholder="E.g. 'John Doe <john@example.org>'"
             required
-            bind:value={newMail.to} />
+            bind:value={newMail.to}/>
         </div>
 
         <div class="flex space-x-2 items-center">
@@ -111,7 +113,7 @@
             name="subject-input"
             placeholder="Some subject line"
             required
-            bind:value={newMail.subject} />
+            bind:value={newMail.subject}/>
         </div>
 
         <div class="flex space-x-2 items-center">
@@ -151,7 +153,7 @@
               style="min-height: 300px;"
               placeholder="Your message (text or HTML)"
               name="message-input"
-              bind:value={newMail.body} />
+              bind:value={newMail.body}/>
           </div>
         {:else}
           <div class="flex flex-col mt-4 space-y-2">
@@ -162,7 +164,7 @@
               style="min-height: 300px;"
               placeholder="JSON object of variables to be used in the template"
               name="vars-input"
-              bind:value={templateVarsStr} />
+              bind:value={templateVarsStr}/>
           </div>
         {/if}
 
@@ -171,14 +173,14 @@
             <input
               type="checkbox"
               name="html-checkbox"
-              bind:checked={newMail.html} />
+              bind:checked={newMail.html}/>
             <label for="html-checkbox">HTML ?</label>
           </div>
           <button
             type="submit"
             class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"><span
-              class="material-icons"
-              disabled={sending}>send</span>
+            class="material-icons"
+            disabled={sending}>send</span>
             {sending ? 'Sending ...' : 'Send'}</button>
         </div>
       </form>

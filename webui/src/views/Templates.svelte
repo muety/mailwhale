@@ -4,13 +4,7 @@
   import Layout from '../layouts/Main.svelte'
   import Navigation from '../components/Navigation.svelte'
   import Modal from '../components/Modal.svelte'
-  import {
-    getTemplates,
-    createTemplate,
-    deleteTemplate,
-    updateTemplate,
-    getDefaultTemplateContent,
-  } from '../api/template'
+  import { createTemplate, deleteTemplate, getDefaultTemplateContent, getTemplates, updateTemplate, } from '../api/template'
   import { errors, successes } from '../stores/alerts'
   import { extractVars } from '../utils/template'
 
@@ -60,14 +54,16 @@
       const result = await updateTemplate(currentTemplate)
       templates[templates.findIndex((t) => t.id === result.id)] = result
       successes.spawn('Template updated successfully')
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 
   async function _loadDefault() {
     try {
       currentTemplate.content = await getDefaultTemplateContent()
       successes.spawn('Template contents replaced by default. Save manually.')
-    } catch (e) {}
+    } catch (e) {
+    }
   }
 
   function reset() {
@@ -118,7 +114,7 @@
 <Layout>
   <div slot="content" class="flex">
     <div class="w-1/4">
-      <Navigation />
+      <Navigation/>
     </div>
     <div class="flex flex-col px-12 w-full w-3/4">
       <div class="flex justify-between mb-8">
@@ -126,15 +122,16 @@
         <button
           class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
           on:click|stopPropagation={(e) => (newTemplateModal = true)}><span
-            class="material-icons">add</span>
-          Create</button>
+          class="material-icons">add</span>
+          Create
+        </button>
       </div>
 
       <p class="mb-8 ">
         <span class="material-icons" style="font-size: inherit;">info</span>
         Here you can manage mail templates, which are stored in the system and
         can later be referenced when sending a mail. Using templates, you do not
-        have to pass the entire mail content from your client application.<br /><br />Templates
+        have to pass the entire mail content from your client application.<br/><br/>Templates
         will usually consist of styled HTML, but can also be plain text. They
         can contain placeholder variables, which are then filled from a JSON
         object when requesting to send a mail using the respective template.<br><br>
@@ -157,7 +154,7 @@
               type="button"
               class="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               on:click|stopPropagation={confirm('Are you sure you want to delete this template?') && _deleteTemplate(currentTemplate.id)}><span
-                class="material-icons">delete_outline</span></button>
+              class="material-icons">delete_outline</span></button>
           </div>
 
           <div>
@@ -170,7 +167,7 @@
               class="font-mono flex-grow w-full text-sm border-2 border-primary rounded-md p-2 flex-grow"
               placeholder="Template content goes here. This can be HTML or plain text."
               style="min-height: 400px"
-              bind:value={currentTemplate.content} />
+              bind:value={currentTemplate.content}/>
           </div>
 
           <div class="flex justify-between w-full">
@@ -188,7 +185,8 @@
             <button
               type="submit"
               class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"><span
-                class="material-icons">save</span>&nbsp; Save</button>
+              class="material-icons">save</span>&nbsp; Save
+            </button>
           </div>
         </form>
       {:else}
@@ -216,14 +214,15 @@
                 name="name-input"
                 placeholder="New template's name"
                 required
-                bind:value={newTemplate.name} />
+                bind:value={newTemplate.name}/>
             </div>
 
             <div class="flex justify-between py-2">
-              <div />
+              <div/>
               <button
                 type="submit"
-                class="py-2 px-4 text-white bg-primary rounded-md hover:bg-primary-dark">Create</button>
+                class="py-2 px-4 text-white bg-primary rounded-md hover:bg-primary-dark">Create
+              </button>
             </div>
           </form>
         </div>
@@ -244,14 +243,15 @@
                 class="font-mono flex-grow w-full text-sm border-2 border-primary rounded-md p-2 flex-grow"
                 placeholder="JSON object of variables to be used in the template"
                 style="min-height: 250px"
-                bind:value={previewVars} />
+                bind:value={previewVars}/>
               <div class="flex justify-end w-full">
                 <button
                   type="button"
                   class="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
                   on:click|stopPropagation={(e) => (previewContent = renderHtml(currentTemplate.content, previewVars))}><span
-                    class="material-icons">preview</span>
-                  &nbsp; Render Preview</button>
+                  class="material-icons">preview</span>
+                  &nbsp; Render Preview
+                </button>
               </div>
             </div>
             <div class="flex flex-col space-y-2">

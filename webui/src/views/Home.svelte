@@ -5,13 +5,14 @@
 </script>
 
 <Layout>
-<div slot="content" class="flex flex-col items-center justify-center space-y-8">
+  <div slot="content" class="flex flex-col items-center justify-center space-y-8">
     <img src="images/screenshot.png" alt="Screenshot" width="400px" class="-mt-24"/>
     <h1 class="text-4xl font-semibold text-center">
       MailWhale is a <span class="text-primary">bring-your-own-SMTP</span> mail relay
     </h1>
     <p class="max-w-screen-lg text-center">
-      Or, in other words, it is a web service for sending mails via <strong>REST API</strong>. Think of <a href="https://mailgun.com" target="_blank" class="text-primary">Mailgun</a> or <a href="https://sendgrid.com" target="_blank" class="text-primary">SendGrid</a>, except self-hosted and with less features. Or like <a href="https://cuttlefish.io/" target="_blank" class="text-primary">Cuttlefish</a>, but without having to host your own SMTP server. <strong>Plug any SMTP server</strong>, like <a href="https://mail.google.com" target="_blank" class="text-primary">Google Mail</a>, <a href="https://mailbox.org" target="_blank" class="text-primary">Mailbox.org</a>, etc. or a self-hosted one and start sending mails from within your application via simple HTTP requests.
+      Or, in other words, it is a web service for sending mails via <strong>REST API</strong>. Think of <a href="https://mailgun.com" target="_blank" class="text-primary">Mailgun</a> or <a href="https://sendgrid.com" target="_blank" class="text-primary">SendGrid</a>, except self-hosted and with less features. Or like <a href="https://cuttlefish.io/" target="_blank" class="text-primary">Cuttlefish</a>, but without having to host your own SMTP server. <strong>Plug any SMTP server</strong>, like <a href="https://mail.google.com" target="_blank" class="text-primary">Google Mail</a>, <a
+      href="https://mailbox.org" target="_blank" class="text-primary">Mailbox.org</a>, etc. or a self-hosted one and start sending mails from within your application via simple HTTP requests.
     </p>
     <div class="w-full max-w-screen-lg">
       <div class="flex mx-2 mb-1 space-x-4 text-sm font-semibold text-gray-400">
@@ -55,7 +56,7 @@ client := &http.Client{'{'}}{'}'}
 client.Do(req)
         </textarea>
 
-        {:else if lang === 'node'}
+      {:else if lang === 'node'}
         <textarea class="w-full p-4 font-mono text-xs text-gray-100 bg-gray-800 rounded-md resize-none" rows="16" disabled>
 const fetch = require('node-fetch')
 
@@ -88,7 +89,7 @@ await fetch('https://mailwhale.dev/api/mail', {'{'}
         <li class="flex items-center space-x-1"><span class="material-icons">check</span><span>Multi-user support</span></li>
         <li class="flex items-center space-x-1"><span class="material-icons">check</span><span>HTML e-mail templates</span></li>
       </ul>
+    </div>
   </div>
-</div>
 
 </Layout>

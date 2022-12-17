@@ -43,19 +43,19 @@
 
   <header class="flex justify-between w-full">
     <a id="logo-container" href="/" class="flex items-center space-x-4">
-      <img src="images/logo.svg" alt="Logo" style="max-height: 60px;" />
+      <img src="images/logo.svg" alt="Logo" style="max-height: 60px;"/>
       <div class="flex">
         <span class="text-xl font-semibold text-primary">Mail</span>
         <span class="text-xl font-semibold">Whale</span>
       </div>
     </a>
     <div>
-      <AccountIndicator currentUser={$user} on:logout={logout} />
+      <AccountIndicator currentUser={$user} on:logout={logout}/>
     </div>
   </header>
 
   <main class="flex-grow mt-24">
-    <slot name="content" />
+    <slot name="content"/>
   </main>
 
   <footer class="flex justify-between mt-8 text-sm">

@@ -46,5 +46,5 @@
 </style>
 
 <div id="app-container" class="container flex flex-col flex-grow mx-auto">
-  <svelte:component this={page} />
+  <svelte:component this={page}/>
 </div>
