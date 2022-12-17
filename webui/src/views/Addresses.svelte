@@ -10,6 +10,7 @@
   let me
   let newAddress = ''
   let newAddressModal = false
+  let loading = false
 
   async function _deleteAddress(sender) {
     me = await updateMe({
@@ -37,7 +38,12 @@
   }
 
   onMount(async () => {
-    me = await getMe()
+    loading = true
+    try {
+      me = await getMe()
+    } finally {
+      loading = false
+    }
   })
 </script>
 
@@ -148,6 +154,11 @@
               </div>
             </div>
           {/each}
+        </div>
+      {:else if loading}
+        <div
+          class="flex items-center justify-center w-full py-12 text-gray-500">
+          <i>Loading ...</i>
         </div>
       {:else}
         <div

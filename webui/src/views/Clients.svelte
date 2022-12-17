@@ -17,6 +17,7 @@
 
   let me
   let clients = []
+  let loading = false
 
   const emptyClient = {
     id: null,
@@ -63,8 +64,13 @@
   }
 
   onMount(async () => {
-    me = await getMe()
-    clients = await getClients()
+    loading = true
+    try {
+      me = await getMe()
+      clients = await getClients()
+    } finally {
+      loading = false
+    }
   })
 </script>
 
@@ -112,6 +118,11 @@
               <span slot="index">{i + 1}</span>
             </ClientCard>
           {/each}
+        </div>
+      {:else if loading}
+        <div
+          class="flex items-center justify-center w-full py-12 text-gray-500">
+          <i>Loading ...</i>
         </div>
       {:else}
         <div

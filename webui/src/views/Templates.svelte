@@ -9,6 +9,7 @@
   import { extractVars } from '../utils/template'
 
   let templates = []
+  let loading = false
 
   const emptyTemplate = {
     id: null,
@@ -103,8 +104,13 @@
   }
 
   onMount(async () => {
-    templates = await getTemplates()
-    reset()
+    loading = true
+    try {
+      templates = await getTemplates()
+    } finally {
+      reset()
+      loading = false
+    }
   })
 </script>
 
@@ -189,6 +195,11 @@
             </button>
           </div>
         </form>
+      {:else if loading}
+        <div
+          class="flex items-center justify-center w-full py-12 text-gray-500">
+          <i>Loading ...</i>
+        </div>
       {:else}
         <div
           class="w-full py-12 text-gray-500 flex justify-center items-center">
