@@ -28,6 +28,8 @@ func NewSendService() *SendService {
 }
 
 func (s *SendService) Send(mail *types.Mail) error {
+	mail = mail.Sanitized()
+
 	recipients := mail.To.RawStrings()
 
 	if err := s.config.Security.BlockListPatterns().CheckBatch(recipients); err != nil {

@@ -3,25 +3,42 @@ package types
 import (
 	"fmt"
 	"strings"
+	"time"
+)
+
+const (
+	typeHtml  = "text/html; charset=UTF-8"
+	typePlain = "text/plain; charset=UTF-8"
 )
 
 type Mail struct {
-	From    MailAddress   `json:"from"`
-	To      MailAddresses `json:"to"`
-	Subject string        `json:"subject"`
-	Body    string        `json:"body"`
-	Type    string        `json:"type"`
+	From    MailAddress
+	To      MailAddresses
+	Subject string
+	Body    string
+	Type    string
+	Date    time.Time
 }
 
 func (m *Mail) WithText(text string) *Mail {
 	m.Body = text
-	m.Type = "text/plain; charset=UTF-8"
+	m.Type = typePlain
 	return m
 }
 
 func (m *Mail) WithHTML(html string) *Mail {
 	m.Body = html
-	m.Type = "text/html; charset=UTF-8"
+	m.Type = typeHtml
+	return m
+}
+
+func (m *Mail) Sanitized() *Mail {
+	if m.Type == "" {
+		m.Type = typePlain
+	}
+	if m.Date.IsZero() {
+		m.Date = time.Now()
+	}
 	return m
 }
 
@@ -30,12 +47,14 @@ func (m *Mail) String() string {
 		"From: %s\r\n"+
 		"Subject: %s\r\n"+
 		"Content-Type: %s\r\n"+
+		"Date: %s\r\n"+
 		"\r\n"+
 		"%s\r\n",
 		strings.Join(m.To.Strings(), ", "),
 		m.From.String(),
 		m.Subject,
 		m.Type,
+		m.Date.Format(time.RFC1123Z),
 		m.Body,
 	)
 }
