@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"strings"
 	"time"
 )
@@ -12,12 +13,13 @@ const (
 )
 
 type Mail struct {
-	From    MailAddress
-	To      MailAddresses
-	Subject string
-	Body    string
-	Type    string
-	Date    time.Time
+	From      MailAddress
+	To        MailAddresses
+	Subject   string
+	Body      string
+	Type      string
+	Date      time.Time
+	MessageID string
 }
 
 func (m *Mail) WithText(text string) *Mail {
@@ -39,6 +41,9 @@ func (m *Mail) Sanitized() *Mail {
 	if m.Date.IsZero() {
 		m.Date = time.Now()
 	}
+	if m.MessageID == "" {
+		m.MessageID = fmt.Sprintf("<%s@%s>", uuid.New().String(), m.From.Domain())
+	}
 	return m
 }
 
@@ -46,13 +51,17 @@ func (m *Mail) String() string {
 	return fmt.Sprintf("To: %s\r\n"+
 		"From: %s\r\n"+
 		"Subject: %s\r\n"+
+		"Message-ID: %s\r\n"+
+		"MIME-Version: 1.0\r\n"+
 		"Content-Type: %s\r\n"+
+		"Content-Transfer-Encoding: 8bit\r\n"+
 		"Date: %s\r\n"+
 		"\r\n"+
 		"%s\r\n",
 		strings.Join(m.To.Strings(), ", "),
 		m.From.String(),
 		m.Subject,
+		m.MessageID,
 		m.Type,
 		m.Date.Format(time.RFC1123Z),
 		m.Body,
