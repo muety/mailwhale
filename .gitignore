@@ -2,4 +2,8 @@
 config*.yml
 !config.default.yml
 mailwhale
+node_modules
+package-lock.json
+package.json
+dist
 *.db

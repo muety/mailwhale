@@ -1,0 +1,55 @@
+---
+builds:
+  - id: mailwhale-builds
+    binary: mailwhale
+    dir: .
+before:
+  hooks:
+  - sudo npm install -g yarn
+  - yarn --cwd webui
+  - yarn --cwd webui build
+  - cp config.default.yml config.yml
+archives:
+  - id: mailwhale-archives
+    builds:
+      - mailwhale-builds
+    files:
+      - LICENSE
+      - README.md
+      - webui/public/*
+      - config.default.yml
+      - templates/*
+      - version.txt
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      386: i386
+      amd64: x86_64
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+dockers:
+  - ids:
+      - mailwhale-builds
+    goos: linux
+    goarch: amd64
+    extra_files:
+      - "./go.mod"
+      - "./go.sum"
+      - "main.go"
+      - "version.txt"
+      - "config.yml"
+      - "LICENSE"
+      - "README.md"
+      - "assets/"
+      - "config/"
+      - "service/"
+      - "templates/"
+      - "types/"
+      - "util/"
+      - "web/"
+      - "webui/"
+
+    image_templates:
+      - "ghcr.io/{{ .Env.GHCR_OWNER }}/mailwhale:latest"
+      - "ghcr.io/{{ .Env.GHCR_OWNER }}/mailwhale:{{ .Tag }}"
+release:
+  mode: replace
