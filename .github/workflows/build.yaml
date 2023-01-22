@@ -2,8 +2,8 @@ name: build
 
 on:
   push:
-    branches:
-    - master
+    tags:
+    - '**'
 
 jobs:
   build_container:
@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "GHCR_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Create Config
         run: |
           cp config.default.yml config.yml
@@ -31,4 +31,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.GHCR_OWNER }}/mailwhale:latest
-            ghcr.io/${{ env.GHCR_OWNER }}/mailwhale:${{ github.sha }}
+            ghcr.io/${{ env.GHCR_OWNER }}/learners:${{ github.ref_name }}
