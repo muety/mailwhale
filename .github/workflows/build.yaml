@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build_container:
+    name: build container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: get ghcr owner repository
+        run: |
+          echo "GHCR_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create Config
+        run: |
+          cp config.default.yml config.yml
+      - name: Build and push image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ env.GHCR_OWNER }}/mailwhale:latest
+            ghcr.io/${{ env.GHCR_OWNER }}/mailwhale:${{ github.sha }}

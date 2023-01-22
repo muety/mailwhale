@@ -1,6 +1,6 @@
 # Build Stage
 
-FROM golang:1.18 AS api-build-env
+FROM golang:1.19 AS api-build-env
 
 WORKDIR /src
 ADD . .
@@ -11,7 +11,7 @@ RUN cp /src/mailwhale . && \
     cp /src/version.txt . && \
     cp -r /src/templates .
 
-FROM node:14 AS ui-build-env
+FROM node:18 AS ui-build-env
 
 WORKDIR /src
 ADD webui .
