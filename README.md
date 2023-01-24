@@ -64,16 +64,15 @@ $ ./mailwhale
 curl -s https://api.github.com/repos/muety/mailwhale/releases/latest | jq -r ".assets[] | select(.name|match(\"Linux_$(arch).tar.gz\")) | .browser_download_url" | wget -qi -
 
 # 2. Extract
-mkdir /opt/mailwhale
-tar xf mailwhale_*.tar.gz -C /opt/mailwhale
-cd /opt/mailwhale
+mkdir mailwhale
+tar xf mailwhale_*.tar.gz -C mailwhale
+cd mailwhale
 
-# 3. Adapt config to your needs, i.e. set your SMTP server and credentials, etc.
-cp config.default.yml config.yml
-vi config.yml
+# 3.[Optional] Adapt config to your needs, i.e. set your SMTP server and credentials, etc.
+# vi config.yml
 
 # 4. Run it
-$ ./mailwhale
+./mailwhale
 ```
 
 ### With Docker Image
