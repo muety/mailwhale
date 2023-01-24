@@ -17,9 +17,9 @@ As a developer, chances are high that at some point you need to teach your appli
 Essentially, there are two options. Either you use a **professional mail sending service** or
 you **include an SMTP client library** to your software and **plug your own mail server**.
 
-Think of MailWhale like [Mailgun](https://mailgun.com), [SendGrid](https://sendgrid.com) or [SMTPeter](https://smtpeter.com), but open source and self-hosted. Or like [Postal](https://github.com/postalhq/postal) or [Cuttlefish](https://cuttlefish.io/), but less bloated and without running its own, internal SMTP server. 
+Think of MailWhale like [Mailgun](https://mailgun.com), [SendGrid](https://sendgrid.com) or [SMTPeter](https://smtpeter.com), but open source and self-hosted. Or like [Postal](https://github.com/postalhq/postal) or [Cuttlefish](https://cuttlefish.io/), but less bloated and without running its own, internal SMTP server.
 
-However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity, 
+However, if you want the best of both worlds – that is, send mails via simple HTTP calls and with no extra complexity,
 but still use your own infrastructure – you may want to go with ✉️🐳.
 
 You get a simple **REST API**, which you can call to send out e-mail. You can plug your self-hosted SMTP server, as well as Google Mail or **literally any other e-mail provider**.
@@ -29,12 +29,15 @@ Stay tuned, there is a lot more to come.
 ![](assets/screenshot01.png)
 
 ## 🚧 Project State
+
 The project is in a very early stage and breaking changes are likely to happen. We'd recommend to not yet use this in production or at least expect non-trivial effort required to upgrade to a new version.
 
 For a more stable and robust alternative to MailWhale, check out [postalsys/emailengine](https://github.com/postalsys/emailengine).
 
 ## 📦 Installation
+
 ### Compile from source
+
 ```bash
 # 1. Clone repo
 $ git clone https://github.com/muety/mailwhale.git
@@ -54,7 +57,37 @@ $ GO111MODULE=on go build
 $ ./mailwhale
 ```
 
-### With Docker
+### From GitHub Release
+
+```bash
+# 1. Download latest release
+curl -s https://api.github.com/repos/muety/mailwhale/releases/latest | jq -r ".assets[] | select(.name|match(\"Linux_$(arch).tar.gz\")) | .browser_download_url" | wget -qi -
+
+# 2. Extract
+mkdir mailwhale
+tar xf mailwhale_*.tar.gz -C mailwhale
+cd mailwhale
+
+# 3.[Optional] Adapt config to your needs, i.e. set your SMTP server and credentials, etc.
+# vi config.yml
+
+# 4. Run it
+./mailwhale
+```
+
+### With Docker Image
+
+```bash
+$ docker run -d \
+  -p 127.0.0.1:3000:3000 \
+  -v "$(pwd)/config.yml":/app/config.yml:ro \
+  -v mailwhale_data:/data \
+  --name mailwhale \
+  docker pull ghcr.io/muety/mailwhale
+```
+
+### Build custom Docker Image
+
 ```bash
 # 1. Clone repo
 $ git clone https://github.com/muety/mailwhale.git
@@ -78,18 +111,22 @@ $ docker run -d \
   mailwhale
 ```
 
-**Note:** An official Docker image is about to come. Also, there will be no need to mount your config file into the container, as everything will be configurable using environment variables eventually. 
+**Note:** An official Docker image is about to come. Also, there will be no need to mount your config file into the container, as everything will be configurable using environment variables eventually.
 
 ## ⌨️ Usage
-First of all, you can get most tasks done through the web UI, available at http://localhost:3000.
+
+First of all, you can get most tasks done through the web UI, available at <http://localhost:3000>.
 
 ### 1. Define a user
-To get started with MailWhale, you need to create a **user** first. To do so, register a new user API or web UI. `security.allow_signup` needs to be set to `true`. 
+
+To get started with MailWhale, you need to create a **user** first. To do so, register a new user API or web UI. `security.allow_signup` needs to be set to `true`.
 
 ### 2. Create an API client
-It is good practice to not authenticate against the API as a user directly. Instead, create an **API client** with limited privileges, that could easily be revoked in the future. A client is identified by a **client ID** and a **client secret** (or token), very similar to what you might already be familiar with from AWS APIs. Usually, such a client corresponds to an individual client application of yours, which wants to access MailWhale's API. 
+
+It is good practice to not authenticate against the API as a user directly. Instead, create an **API client** with limited privileges, that could easily be revoked in the future. A client is identified by a **client ID** and a **client secret** (or token), very similar to what you might already be familiar with from AWS APIs. Usually, such a client corresponds to an individual client application of yours, which wants to access MailWhale's API.
 
 #### Request
+
 ```bash
 $ curl -XPOST \
      -u 'admin@local.host:admin' \
@@ -103,7 +140,8 @@ $ curl -XPOST \
 ```
 
 #### Response
-```
+
+```json
 {
     "id": "SVNORFBUWGhxWGZSUUl0eA==",
     "description": "My juicy web app",
@@ -129,6 +167,7 @@ $ echo "Authorization: Basic $(echo '<client_id>:<client_secret>' | base64)"
 ### 3. Send E-Mails
 
 #### Plain text or HTML
+
 ```bash
 $ curl -XPOST \
   -u '<client_id>:<client_secret>' \
@@ -144,7 +183,9 @@ $ curl -XPOST \
 You can also a `text` field instead, to send a plain text message.
 
 #### Using a template
+
 In case you have created a template using the web UI, you can reference it in a new mail like so:
+
 ```bash
 $ curl -XPOST \
   -u '<client_id>:<client_secret>' \
@@ -161,6 +202,7 @@ $ curl -XPOST \
 ```
 
 ## 🔧 Configuration Options
+
 You can specify configuration options either via a config file (`config.yml`) or via environment variables. Here is an overview of all options.
 
 | YAML Key                  | Environment Variable         | Default                   | Description                                                                        |
@@ -184,14 +226,16 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `security.block_list`     | `MW_SECURITY_BLOCK_LIST`     | `[]`                      | List of [regexes](https://regex101.com/) used to block certain recipient addresses |
 
 ### Sender verification & SPF Check
+
 By default, mails are sent using a randomly generated address in the `From` header, which belongs to the domain configured via `mail.domain` (i.e. `user+abcdefgh@wakapi.dev`). Optionally, custom sender addresses can be configured on a per-API-client basis. However, it is recommended to properly configure [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) on that custom domain and instruct MailWhale to verify that configuration.
 
 **As a user**, you need to configure your domain, which you want to use as part of your senders address (e.g. `example.org` for sending mails from `User Server <noreply@example.org>`), to publish an SPF record that delegates to the domain under which MailWhale is running (e.g. mailwhale.dev).
+
 ```
 example.org.  IN  TXT v=spf1 include:mailwhale.dev
 ```
 
-**As a server operator** of a MailWhale instance, you need to enable `mail.verify_senders` and set your `mail.domain` and `web.public_url`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts). 
+**As a server operator** of a MailWhale instance, you need to enable `mail.verify_senders` and set your `mail.domain` and `web.public_url`. For that domain, you need to configure an SPF record that allows your SMTP relay provider's (e.g. Mailbox.org, GMail, SendGrid, etc.) mail servers to be senders. Refer to your provider's documentation, e.g. [this](https://kb.mailbox.org/display/MBOKBEN/How+to+integrate+external+e-mail+accounts).
 
 ## 🚀 Features (planned)
 

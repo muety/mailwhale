@@ -2,14 +2,7 @@
 
 FROM golang:1.19 AS api-build-env
 
-WORKDIR /src
-ADD . .
-RUN CGO_ENABLED=0 go build -o mailwhale
-
 WORKDIR /app
-RUN cp /src/mailwhale . && \
-    cp /src/version.txt . && \
-    cp -r /src/templates .
 
 FROM node:18 AS ui-build-env
 
@@ -26,8 +19,7 @@ RUN yarn && \
 FROM alpine
 WORKDIR /app
 
-ADD config.yml .
-COPY --from=api-build-env /app .
+COPY mailwhale README.md version.txt LICENSE config.yml templates/ ./
 COPY --from=ui-build-env /src/public ./webui/public
 
 ENV MW_ENV=prod
