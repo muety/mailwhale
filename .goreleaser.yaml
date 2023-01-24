@@ -17,7 +17,7 @@ archives:
       - LICENSE
       - README.md
       - webui/public/*
-      - config.default.yml
+      - config.yml
       - templates/*
       - version.txt
     replacements:
@@ -31,21 +31,13 @@ dockers:
       - mailwhale-builds
     goos: linux
     goarch: amd64
+    dockerfile: Dockerfile-goreleaser
     extra_files:
-      - "./go.mod"
-      - "./go.sum"
-      - "main.go"
       - "version.txt"
       - "config.yml"
       - "LICENSE"
       - "README.md"
-      - "assets/"
-      - "config/"
-      - "service/"
       - "templates/"
-      - "types/"
-      - "util/"
-      - "web/"
       - "webui/"
 
     image_templates:
