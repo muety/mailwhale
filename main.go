@@ -68,9 +68,11 @@ func main() {
 	handler := corsHandler.Handler(router)
 
 	// Static routes
-	router.PathPrefix("/").Handler(handlers.SPAHandler{
-		StaticPath: "./webui/public",
-		IndexPath:  "index.html",
+	router.PathPrefix("/").Handler(&handlers.SPAHandler{
+		StaticPath:      "./webui/public",
+		IndexPath:       "index.html",
+		ReplaceBasePath: config.Web.GetPublicUrl() + "/",
+		NoCache:         config.IsDev(),
 	})
 
 	listen(handler, config)

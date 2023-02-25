@@ -4,10 +4,13 @@
 
   import { user } from '../stores/auth'
   import { errors, infos, successes } from '../stores/alerts'
+  import { config } from '../stores/config'
+
+  const basePath = config.get().basePath
 
   function logout() {
     user.logout()
-    window.location.replace('/')
+    window.location.replace('')
   }
 </script>
 
@@ -42,7 +45,7 @@
   </div>
 
   <header class="flex justify-between w-full">
-    <a id="logo-container" href="/" class="flex items-center space-x-4">
+    <a id="logo-container" href="/{basePath}" class="flex items-center space-x-4">
       <img src="images/logo.svg" alt="Logo" style="max-height: 60px;"/>
       <div class="flex">
         <span class="text-xl font-semibold text-primary">Mail</span>

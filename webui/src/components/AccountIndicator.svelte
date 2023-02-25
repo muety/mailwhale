@@ -19,11 +19,11 @@
       on:click={logout}>Logout</span>
   {:else}
     <a
-      href="/signup"
+      href="signup"
       class="font-semibold text-primary hover:text-primary-dark">Sign Up</a>
     <span>&nbsp;|&nbsp;</span>
     <a
-      href="/login"
+      href="login"
       class="font-semibold text-primary hover:text-primary-dark">Login</a>
   {/if}
 </div>

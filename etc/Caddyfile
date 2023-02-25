@@ -1,0 +1,13 @@
+mailwhale.mydomain.tld {
+    encode zstd gzip
+
+    # option 1: serve at root path
+    reverse_proxy http://localhost:3000
+
+    # option 2: serve under sub-path
+    route /mailwhale* {
+        uri strip_prefix /mailwhale
+        reverse_proxy http://localhost:3000
+    }
+
+}

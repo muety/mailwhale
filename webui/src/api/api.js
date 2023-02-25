@@ -1,8 +1,12 @@
 import { user } from '../stores/auth'
 import { errors } from '../stores/alerts'
+import { sanitize } from '../utils/url'
+import { config } from '../stores/config'
+
+const basePath = config.get().basePath
 
 function apiUrl() {
-  return process?.env?.apiUrl || '/api'
+  return sanitize(`/${basePath}/${process?.env?.apiUrl || '/api'}`)
 }
 
 function baseHeaders() {
@@ -23,7 +27,7 @@ async function request(path, data, options) {
   if (response.status === 401) {
     user.logout()
     if (!options.skipRedirect) {
-      window.location.replace('/')
+      window.location.replace('')
     }
   }
 

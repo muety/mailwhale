@@ -8,6 +8,8 @@
   import Imprint from './views/Imprint.svelte';
   import Addresses from './views/Addresses.svelte';
   import Templates from './views/Templates.svelte';
+  import { sanitize } from './utils/url'
+  import { config } from './stores/config'
 
   import { user } from './stores/auth'
 
@@ -15,19 +17,23 @@
 
   user.load()
 
-  router('/', () => {
+  const basePath = config.get().basePath
+
+  router(`/${basePath}`, () => {
     if (!!user.getToken()) {
-      router.redirect('/clients')
+      router.redirect(sanitize(`/${basePath}/clients`))
     }
     page = Home
   })
-  router('/login', () => (page = Login))
-  router('/signup', () => (page = Signup))
-  router('/clients', () => (page = Clients))
-  router('/mails', () => (page = Mails))
-  router('/imprint', () => (page = Imprint))
-  router('/addresses', () => (page = Addresses))
-  router('/templates', () => (page = Templates))
+  router(sanitize(`/${basePath}/login`), () => (page = Login))
+  router(sanitize(`/${basePath}/signup`), () => (page = Signup))
+  router(sanitize(`/${basePath}/clients`), () => (page = Clients))
+  router(sanitize(`/${basePath}/mails`), () => (page = Mails))
+  router(sanitize(`/${basePath}/imprint`), () => (page = Imprint))
+  router(sanitize(`/${basePath}/addresses`), () => (page = Addresses))
+  router(sanitize(`/${basePath}/templates`), () => (page = Templates))
+
+  // don't forget to update stores/config/reservedRoutes when adding a new route here
 
   router.start()
 </script>
