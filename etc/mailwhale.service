@@ -1,0 +1,44 @@
+[Unit]
+Description=MailWhale
+StartLimitIntervalSec=400
+StartLimitBurst=3
+
+[Service]
+Type=simple
+
+# Assuming MailWhale executable is under /opt/mailwhale and config file at /etc
+# Feel free to change this
+WorkingDirectory=/opt/mailwhale
+ExecStart=/opt/mailwhale/mailwhale -config /etc/mailwhale.yml
+
+# Optionally override some config options using additional environment variables, see README for more
+Environment=MW_ENV=prod
+
+# sudo groupadd mailwhale
+# sudo useradd -g mailwhale mailwhale
+User=mailwhale
+Group=mailwhale
+RuntimeDirectory=mailwhale  # creates /run/mailwhale
+
+Restart=on-failure
+RestartSec=90
+
+# Security hardening (all optional)
+PrivateTmp=true
+PrivateUsers=true
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+PrivateDevices=true
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+ProtectClock=true
+RestrictSUIDSGID=true
+ProtectHostname=true
+ProtectProc=invisible
+
+[Install]
+WantedBy=multi-user.target
