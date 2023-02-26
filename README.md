@@ -51,7 +51,7 @@ $ cd webui/
 $ yarn && yarn build
 $ cd ..
 # 4. Compile API
-$ GO111MODULE=on go build
+$ go build
 
 # 5. Run it
 $ ./mailwhale
@@ -112,6 +112,9 @@ $ docker run -d \
 ```
 
 **Note:** An official Docker image is about to come. Also, there will be no need to mount your config file into the container, as everything will be configurable using environment variables eventually.
+
+### Reverse Proxy
+To run this app behind a reverse proxy, see [here](https://github.com/muety/wakapi/wiki/Reverse-Proxy) for example configurations for different web servers (works analogously for MailWhale). In addition, `MW_WEB_PUBLIC_URL` (or `web.public_url`, respectively) must be configured accordingly (set to the absolute URL of your MailWhale instance). Also see [#43](https://github.com/muety/mailwhale/issues/43).
 
 ## ⌨️ Usage
 
