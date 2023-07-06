@@ -13,6 +13,7 @@ web:
 smtp:
   host: 'localhost'
   port: 465
+  auth: true
   username: 'you@example.org'
   password: 'your secret password'
   tls: true                           # Whether to connect via SSL/TLS (set 'false' for STARTTLS)

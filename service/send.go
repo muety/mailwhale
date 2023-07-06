@@ -17,6 +17,11 @@ type SendService struct {
 
 func NewSendService() *SendService {
 	config := conf.Get()
+
+	if config.Smtp.Auth == false {
+		return &SendService{config: config, auth: nil}
+	}
+
 	return &SendService{
 		config: config,
 		auth: sasl.NewPlainClient(

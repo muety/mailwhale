@@ -31,6 +31,7 @@ type mailConfig struct {
 type smtpConfig struct {
 	Host          string `env:"MW_SMTP_HOST"`
 	Port          uint   `env:"MW_SMTP_PORT"`
+	Auth          bool   `yaml:"auth" env:"MW_SMTP_AUTH" default:"true"`
 	Username      string `env:"MW_SMTP_USER"`
 	Password      string `env:"MW_SMTP_PASS"`
 	TLS           bool   `env:"MW_SMTP_TLS"`

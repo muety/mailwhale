@@ -217,6 +217,7 @@ You can specify configuration options either via a config file (`config.yml`) or
 | `web.public_url`          | `MW_PUBLIC_URL`              | `http://localhost:3000`   | The URL under which your MailWhale server is available from the public internet    |
 | `smtp.host`               | `MW_SMTP_HOST`               | -                         | SMTP relay host name or IP                                                         |
 | `smtp.port`               | `MW_SMTP_PORT`               | -                         | SMTP relay port                                                                    |
+| `smtp.auth`               | `MW_SMTP_AUTH`               | `true`                    | SMTP relay uses authentication                                                     |
 | `smtp.username`           | `MW_SMTP_USER`               | -                         | SMTP relay authentication user name                                                |
 | `smtp.password`           | `MW_SMTP_PASS`               | -                         | SMTP relay authentication password                                                 |
 | `smtp.tls`                | `MW_SMTP_TLS`                | `false`                   | Whether to require full TLS (not to be confused with STARTTLS) for the SMTP relay  |
