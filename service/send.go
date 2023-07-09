@@ -17,14 +17,15 @@ type SendService struct {
 
 func NewSendService() *SendService {
 	config := conf.Get()
-	return &SendService{
-		config: config,
-		auth: sasl.NewPlainClient(
+	service := &SendService{config: config}
+	if config.Smtp.Username != "" {
+		service.auth = sasl.NewPlainClient(
 			"",
 			config.Smtp.Username,
 			config.Smtp.Password,
-		),
+		)
 	}
+	return service
 }
 
 func (s *SendService) Send(mail *types.Mail) error {
