@@ -1,6 +1,6 @@
 # Build Stage
 
-FROM golang:1.19 AS api-build-env
+FROM golang:1.21 AS api-build-env
 
 WORKDIR /src
 ADD . .
