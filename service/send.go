@@ -82,7 +82,7 @@ func sendMail(addr string, useTls bool, tlsConf *tls.Config, a sasl.Client, from
 		return err
 	}
 	for _, addr := range to {
-		if err = c.Rcpt(addr); err != nil {
+		if err = c.Rcpt(addr, nil); err != nil {
 			return err
 		}
 	}

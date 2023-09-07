@@ -107,6 +107,9 @@ func (s *UserService) spfCheckSenders(senders []types.SenderAddress) error {
 	// TODO: parallelize
 	for _, sender := range senders {
 		senderDomain := strings.Split(sender.MailAddress.Raw(), "@")[1]
+		if senderDomain == s.config.Mail.Domain {
+			continue
+		}
 		if err := s.spfService.Validate(senderDomain); err != nil {
 			return errors.New(fmt.Sprintf("failed to verify spf entry for domain '%s'", senderDomain))
 		}
