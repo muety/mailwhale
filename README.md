@@ -83,7 +83,7 @@ $ docker run -d \
   -v "$(pwd)/config.yml":/app/config.yml:ro \
   -v mailwhale_data:/data \
   --name mailwhale \
-  docker pull ghcr.io/muety/mailwhale
+  ghcr.io/muety/mailwhale
 ```
 
 ### Build custom Docker Image
