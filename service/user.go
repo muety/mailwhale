@@ -3,14 +3,15 @@ package service
 import (
 	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/emvi/logbuch"
 	conf "github.com/muety/mailwhale/config"
 	"github.com/muety/mailwhale/types"
 	"github.com/muety/mailwhale/types/dto"
 	"github.com/muety/mailwhale/util"
 	"github.com/timshannon/bolthold"
-	"strings"
-	"time"
 )
 
 type UserService struct {
@@ -51,6 +52,7 @@ func (s *UserService) Create(signup *dto.Signup) (*types.User, error) {
 		Password:  util.HashBcrypt(signup.Password, s.config.Security.Pepper),
 		Senders:   []types.SenderAddress{},
 		CreatedAt: time.Now(),
+		Verified:  !s.config.Security.VerifyUsers,
 	}
 	if !user.IsValid() {
 		return nil, errors.New("can't create user (empty password or invalid e-mail address)")
