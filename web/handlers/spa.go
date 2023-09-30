@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"github.com/emvi/logbuch"
 )
 
 type SPAHandler struct {
@@ -17,15 +19,9 @@ type SPAHandler struct {
 }
 
 func (h *SPAHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path, err := filepath.Abs(r.URL.Path)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	path := filepath.Join(h.StaticPath, r.URL.Path)
 
-	path = filepath.Join(h.StaticPath, path)
-
-	_, err = os.Stat(path)
+	_, err := os.Stat(path)
 	if os.IsNotExist(err) || r.URL.Path == "/" {
 		if len(h.indexContent) == 0 || h.NoCache {
 			h.loadIndex()
@@ -36,6 +32,7 @@ func (h *SPAHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Write(h.indexContent)
 		return
 	} else if err != nil {
+		logbuch.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
