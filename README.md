@@ -1,3 +1,5 @@
+**Please note: as of Dec 2023, MailWhale is depcreated and not being actively maintained anymore. Please check out some of the alternatives mentioned below.**
+
 <p align="center">
     <img src="assets/logo.svg" width="275px">
 </p>
